@@ -6,18 +6,19 @@
 @section('content')
 @include('partials.page-hero', [
     'eyebrow' => 'Layanan',
-    'title' => 'Satu tim untuk semua urusan komputer',
+    'titleParts' => [['Satu tim untuk semua'], ['urusan komputer.', 'grad']],
     'lead' => 'Untuk kantor, sekolah, instansi, dan rumah di seluruh '.config('site.area').'. Teknisi datang ke lokasi, biaya disepakati sebelum dikerjakan.',
 ])
 
-<section class="b-sec">
-  <div class="wrap b-cards">
+<section class="sec">
+  <div class="wrap bento bento-lg">
     @foreach ($services as $slug => $s)
-      <a class="b-svc" href="{{ route('services.show', $slug) }}">
-        @include('partials.icon', ['name' => $s['icon']])
+      <a class="card spot rv" style="--d:{{ $loop->index }}" href="{{ route('services.show', $slug) }}">
+        <span class="ic-box">@include('partials.icon', ['name' => $s['icon']])</span>
         <b>{{ $s['title'] }}</b>
         <span>{{ $s['short'] }}</span>
-        <em>Lihat detail →</em>
+        <ul class="card-tags">@foreach (array_slice($s['problems'], 0, 3) as $p)<li>{{ $p }}</li>@endforeach</ul>
+        <i class="card-go" aria-hidden="true">→</i>
       </a>
     @endforeach
   </div>

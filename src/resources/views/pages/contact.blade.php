@@ -6,48 +6,51 @@
 @section('content')
 @include('partials.page-hero', [
     'eyebrow' => 'Kontak',
-    'title' => 'Hubungi kami',
+    'titleParts' => [['Mari bicara soal'], ['IT kantor Anda.', 'grad']],
     'lead' => 'Untuk service panggilan, chat WhatsApp paling cepat. Kantor dan instansi bisa mengirim permintaan penawaran di bawah ini.',
 ])
 
-<section class="b-sec">
-  <div class="wrap b-contact">
-    <ul class="b-info">
-      <li>@include('partials.icon', ['name' => 'phone'])<span><b>WhatsApp &amp; telepon</b><a href="{{ \App\Support\Site::whatsappUrl() }}" target="_blank" rel="noopener">{{ config('site.phone') }}</a></span></li>
-      <li>@include('partials.icon', ['name' => 'mail'])<span><b>Email</b><a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a></span></li>
-      <li>@include('partials.icon', ['name' => 'clock'])<span><b>Jam operasional</b>{{ config('site.hours') }}</span></li>
-      <li>@include('partials.icon', ['name' => 'pin'])<span><b>Kantor</b>{{ config('site.address') }} · melayani {{ config('site.area') }}</span></li>
+<section class="sec">
+  <div class="wrap contact">
+    <ul class="info">
+      <li class="spot rv" style="--d:0"><span class="ic-box">@include('partials.icon', ['name' => 'phone'])</span><span><small>WhatsApp &amp; telepon</small><a href="{{ \App\Support\Site::whatsappUrl() }}" target="_blank" rel="noopener">{{ config('site.phone') }}</a></span></li>
+      <li class="spot rv" style="--d:1"><span class="ic-box">@include('partials.icon', ['name' => 'mail'])</span><span><small>Email</small><a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a></span></li>
+      <li class="spot rv" style="--d:2"><span class="ic-box">@include('partials.icon', ['name' => 'clock'])</span><span><small>Jam operasional</small>{{ config('site.hours') }}</span></li>
+      <li class="spot rv" style="--d:3"><span class="ic-box">@include('partials.icon', ['name' => 'pin'])</span><span><small>Kantor</small>{{ config('site.address') }} · melayani {{ config('site.area') }}</span></li>
     </ul>
 
-    <form class="b-form" id="penawaran" method="post" action="{{ route('booking.store') }}">
+    <form class="qform rv" id="penawaran" method="post" action="{{ route('booking.store') }}">
       @csrf
       <input type="hidden" name="type" value="penawaran">
       <input type="hidden" name="source" value="kontak">
       <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
-      <h2>Minta penawaran</h2>
-      @include('partials.errors')
-      <div class="b-row">
-        <label>Nama <input name="name" value="{{ old('name') }}" required autocomplete="name"></label>
-        <label>Instansi / perusahaan <input name="organization" value="{{ old('organization') }}" autocomplete="organization"></label>
+      <div>
+        <span class="eyebrow">Untuk kantor &amp; instansi</span>
+        <h2>Minta penawaran</h2>
       </div>
-      <div class="b-row">
-        <label>Layanan
+      @include('partials.errors')
+      <div class="row2">
+        <label class="field"><input name="name" value="{{ old('name') }}" required autocomplete="name" placeholder=" "><span>Nama</span></label>
+        <label class="field"><input name="organization" value="{{ old('organization') }}" autocomplete="organization" placeholder=" "><span>Instansi / perusahaan</span></label>
+      </div>
+      <div class="row2">
+        <label class="field">
           <select name="device">
             @foreach (config('site.services') as $s)<option @selected(old('device') === $s['title'])>{{ $s['title'] }}</option>@endforeach
             <option @selected(old('device') === 'Kontrak maintenance')>Kontrak maintenance</option>
-          </select>
+          </select><span>Layanan</span>
         </label>
-        <label>Jumlah unit <input name="units" type="number" min="1" inputmode="numeric" value="{{ old('units') }}"></label>
+        <label class="field"><input name="units" type="number" min="1" inputmode="numeric" value="{{ old('units') }}" placeholder=" "><span>Jumlah unit</span></label>
       </div>
-      <label>Kebutuhan <textarea name="complaint" rows="4" required placeholder="Contoh: maintenance 30 PC dan 5 printer, kunjungan 2x sebulan">{{ old('complaint') }}</textarea></label>
-      <label>Lokasi <input name="location" value="{{ old('location') }}" placeholder="Contoh: Jakarta Pusat"></label>
-      <button class="b-p" type="submit">Kirim lewat WhatsApp</button>
-      <small>Data dikirim ke WhatsApp kami, tidak dibagikan ke pihak lain.</small>
+      <label class="field"><textarea name="complaint" rows="4" required placeholder="Contoh: maintenance 30 PC dan 5 printer, kunjungan 2x sebulan">{{ old('complaint') }}</textarea><span>Kebutuhan</span></label>
+      <label class="field"><input name="location" value="{{ old('location') }}" placeholder="Contoh: Jakarta Pusat"><span>Lokasi</span></label>
+      <button class="btn btn-pri btn-block" type="submit" data-magnetic>Kirim lewat WhatsApp<span class="arw" aria-hidden="true">→</span></button>
+      <small class="qform-note">Data dikirim ke WhatsApp kami, tidak dibagikan ke pihak lain.</small>
     </form>
   </div>
 
   <div class="wrap">
-    <iframe class="b-map" title="Lokasi {{ config('site.name') }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+    <iframe class="map rv" title="Lokasi {{ config('site.name') }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
       src="https://www.google.com/maps?q={{ urlencode(config('site.maps_query')) }}&output=embed"></iframe>
   </div>
 </section>

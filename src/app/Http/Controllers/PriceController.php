@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PriceItem;
 use App\Models\ServiceTicket;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 
 class PriceController extends Controller
 {
@@ -21,6 +21,11 @@ class PriceController extends Controller
             ->when($category, fn ($query) => $query->where('category', $category))
             ->orderBy('sort')
             ->get();
+
+        // Permintaan dari pencarian langsung (JS) cukup menerima daftar hasilnya saja
+        if ($request->hasHeader('X-Partial')) {
+            return view('prices._list', compact('items', 'q'));
+        }
 
         return view('prices.index', compact('items', 'q', 'category'));
     }

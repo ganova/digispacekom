@@ -7,45 +7,47 @@
 
 @section('content')
 @include('partials.page-hero', [
-    'crumb' => ' / <a href="'.route('services.index').'">Layanan</a>',
+    'crumb' => '<span>/</span><a href="'.route('services.index').'">Layanan</a>',
     'eyebrow' => 'Layanan',
     'title' => $service['title'],
     'lead' => $service['intro'],
 ])
 
-<section class="b-sec">
-  <div class="wrap b-detail">
+<section class="sec">
+  <div class="wrap detail">
     <div>
-      <h2>Yang biasa kami tangani</h2>
-      <ul class="b-checks">
-        @foreach ($service['problems'] as $problem)<li>{{ $problem }}</li>@endforeach
+      <div class="sec-hd rv"><span class="eyebrow">Yang biasa kami tangani</span><h2>Masalah umum, solusi cepat.</h2></div>
+      <ul class="checks">
+        @foreach ($service['problems'] as $problem)<li class="rv" style="--d:{{ $loop->index }}"><span class="ok" aria-hidden="true">✓</span>{{ $problem }}</li>@endforeach
       </ul>
 
-      <h2>Cara kerjanya</h2>
-      <ol class="b-steps">
-        @foreach (config('site.steps') as [$t, $d])<li><b>{{ $t }}</b>{{ $d }}</li>@endforeach
+      <div class="sec-hd rv" style="margin-top:64px"><span class="eyebrow">Cara kerja</span><h2>Tiga langkah, tanpa ribet.</h2></div>
+      <ol class="flow flow-col rv">
+        @foreach (config('site.steps') as [$t, $d])<li style="--d:{{ $loop->index }}"><span class="flow-n mono">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><b>{{ $t }}</b><p>{{ $d }}</p></li>@endforeach
       </ol>
     </div>
 
-    <aside class="b-card b-aside">
+    <aside class="aside rv">
+      <span class="ic-box">@include('partials.icon', ['name' => $service['icon']])</span>
       <h2>Butuh {{ strtolower($service['title']) }}?</h2>
-      <p>Ceritakan keluhannya, kami balas lewat WhatsApp.</p>
-      <a class="b-p" href="{{ route('landing', 'servis-panggilan') }}?{{ http_build_query(array_filter(['perangkat' => $device])) }}#booking">Booking teknisi</a>
+      <p>Ceritakan keluhannya, kami balas lewat WhatsApp dalam jam kerja.</p>
+      <a class="btn btn-pri btn-block" href="{{ route('landing', 'servis-panggilan') }}?{{ http_build_query(array_filter(['perangkat' => $device])) }}#booking" data-magnetic>Booking teknisi<span class="arw" aria-hidden="true">→</span></a>
       @if ($service['price_category'])
-        <a class="b-s" href="{{ route('prices.index', ['kategori' => $service['price_category']]) }}">Lihat estimasi harga</a>
+        <a class="btn btn-ghost btn-block" href="{{ route('prices.index', ['kategori' => $service['price_category']]) }}">Lihat estimasi harga</a>
       @else
-        <a class="b-s" href="{{ route('contact') }}#penawaran">Minta penawaran</a>
+        <a class="btn btn-ghost btn-block" href="{{ route('contact') }}#penawaran">Minta penawaran</a>
       @endif
+      <p class="aside-ft"><span class="dot-live" aria-hidden="true"></span>{{ config('site.hours') }}</p>
     </aside>
   </div>
 </section>
 
-<section class="b-sec b-sec-alt">
+<section class="sec sec-soft">
   <div class="wrap">
-    <h2>Layanan lainnya</h2>
-    <div class="b-cards">
+    <div class="sec-hd rv"><span class="eyebrow">Lainnya</span><h2>Layanan lainnya</h2></div>
+    <div class="bento">
       @foreach ($others as $slug => $s)
-        <a class="b-svc" href="{{ route('services.show', $slug) }}">@include('partials.icon', ['name' => $s['icon']])<b>{{ $s['title'] }}</b><span>{{ $s['short'] }}</span></a>
+        <a class="card spot rv" style="--d:{{ $loop->index }}" href="{{ route('services.show', $slug) }}"><span class="ic-box">@include('partials.icon', ['name' => $s['icon']])</span><b>{{ $s['title'] }}</b><span>{{ $s['short'] }}</span><i class="card-go" aria-hidden="true">→</i></a>
       @endforeach
     </div>
   </div>

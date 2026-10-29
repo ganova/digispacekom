@@ -7,18 +7,27 @@
 
 @section('content')
 <section class="a-hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="wrap a-hero-in">
-    <div>
-      <h1>{{ $page['headline'] }} <span>{{ $page['highlight'] }}</span></h1>
-      <p>{{ $page['lead'] }}</p>
-      <ul class="a-chk">@foreach ($page['checks'] as $check)<li>{{ $check }}</li>@endforeach</ul>
+    <div class="a-copy">
+      <span class="eyebrow eyebrow-inv fade-up" style="--fd:.05s">Service panggilan · {{ config('site.area') }}</span>
+      <h1 class="split">{!! \App\Support\Site::split([[$page['headline']], [$page['highlight'], 'grad']]) !!}</h1>
+      <p class="lead fade-up" style="--fd:.5s">{{ $page['lead'] }}</p>
+      <ul class="a-chk fade-up" style="--fd:.65s">@foreach ($page['checks'] as $check)<li><span class="ok" aria-hidden="true">✓</span>{{ $check }}</li>@endforeach</ul>
+      <div class="a-proof fade-up" style="--fd:.8s">
+        <div class="a-av" aria-hidden="true"><i>DS</i><i>IT</i><i>✓</i></div>
+        <p>Dipercaya <b>kedutaan, KPU, sekolah</b>, dan kantor swasta di Jakarta.</p>
+      </div>
     </div>
 
-    <form class="a-form" id="booking" method="post" action="{{ route('booking.store') }}">
+    <form class="a-form fade-up" style="--fd:.3s" id="booking" method="post" action="{{ route('booking.store') }}">
       @csrf
       <input type="hidden" name="source" value="{{ $slug }}">
       <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
-      <h2>{{ $page['form_title'] }}</h2>
+      <div class="a-form-hd">
+        <h2>{{ $page['form_title'] }}</h2>
+        <span class="a-badge"><span class="dot-live" aria-hidden="true"></span>Balas cepat via WA</span>
+      </div>
       @include('partials.errors')
       <fieldset>
         <legend>Perangkat</legend>
@@ -28,41 +37,62 @@
           @endforeach
         </div>
       </fieldset>
-      <label>Keluhan <textarea name="complaint" rows="2" required placeholder="{{ $page['placeholder'] }}">{{ old('complaint', $complaint) }}</textarea></label>
-      <label>Lokasi <input name="location" value="{{ old('location') }}" required placeholder="Contoh: Bekasi Barat" autocomplete="address-level2"></label>
-      <label>Nama <span class="opt">(opsional)</span><input name="name" value="{{ old('name') }}" autocomplete="name"></label>
-      <button class="a-send" type="submit">Kirim lewat WhatsApp</button>
+      <label class="field"><textarea name="complaint" rows="3" required placeholder="{{ $page['placeholder'] }}">{{ old('complaint', $complaint) }}</textarea><span>Keluhan</span></label>
+      <div class="row2">
+        <label class="field"><input name="location" value="{{ old('location') }}" required placeholder="Contoh: Bekasi Barat" autocomplete="address-level2"><span>Lokasi</span></label>
+        <label class="field"><input name="name" value="{{ old('name') }}" autocomplete="name" placeholder=" "><span>Nama <span class="opt">(opsional)</span></span></label>
+      </div>
+      <button class="btn btn-lime btn-block a-send" type="submit">@include('partials.icon', ['name' => 'wa'])Kirim lewat WhatsApp</button>
+      <p class="a-safe">🔒 Tanpa biaya booking. Biaya servis disepakati setelah dicek.</p>
     </form>
   </div>
+
+  <div class="a-clients" id="klien">
+    <div class="marquee">
+      @foreach ([1, 2] as $copy)
+        <div @if ($copy === 2) aria-hidden="true" @endif>@foreach (config('site.clients') as $client)<span>{{ $client }}</span>@endforeach</div>
+      @endforeach
+    </div>
+  </div>
 </section>
 
-<section class="a-sec" id="layanan">
+<section class="sec" id="layanan">
   <div class="wrap">
-    <h2>Layanan kami</h2>
-    <p class="a-sub">Satu tim untuk semua urusan komputer rumah dan kantor.</p>
-    <div class="a-svc">
+    <div class="sec-hd rv">
+      <span class="eyebrow">Layanan kami</span>
+      <h2>Satu tim untuk semua urusan <span class="grad-dark">komputer.</span></h2>
+      <p class="lead">Rumah maupun kantor, teknisi datang dengan peralatan lengkap.</p>
+    </div>
+    <div class="bento">
       @foreach (config('site.services') as $key => $s)
-        <a href="{{ route('services.show', $key) }}">@include('partials.icon', ['name' => $s['icon']])<b>{{ $s['title'] }}</b><small>{{ $s['short'] }}</small></a>
+        <a class="card spot rv" style="--d:{{ $loop->index }}" href="{{ route('services.show', $key) }}"><span class="ic-box">@include('partials.icon', ['name' => $s['icon']])</span><b>{{ $s['title'] }}</b><span>{{ $s['short'] }}</span><i class="card-go" aria-hidden="true">→</i></a>
       @endforeach
     </div>
   </div>
 </section>
 
-<section class="a-sec a-sec-tight">
+<section class="sec sec-dark" id="cara-kerja">
+  <div class="aurora aurora-soft" aria-hidden="true"><i></i><i></i></div>
   <div class="wrap">
-    <div class="a-steps">
+    <div class="sec-hd rv"><span class="eyebrow eyebrow-inv">Cara kerja</span><h2>Booking sekarang, teknisi datang.</h2></div>
+    <ol class="flow flow-dark rv">
       @foreach (config('site.steps') as [$t, $d])
-        <div><i>{{ $loop->iteration }}</i><span><b>{{ $t }}</b>{{ $d }}</span></div>
+        <li style="--d:{{ $loop->index }}"><span class="flow-n mono">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><b>{{ $t }}</b><p>{{ $d }}</p></li>
       @endforeach
-    </div>
+    </ol>
   </div>
 </section>
 
-<section class="a-sec a-sec-tight a-center" id="klien">
+<section class="sec">
   <div class="wrap">
-    <p class="a-sub">Dipercaya kantor &amp; instansi di Jakarta</p>
-    <div class="a-cl">@foreach (config('site.clients') as $client)<span>{{ $client }}</span>@endforeach</div>
-    <a class="a-bk a-bk-lg" href="#booking">Booking teknisi sekarang</a>
+    <div class="a-final spot rv">
+      <h2>Jangan biarkan perangkat bermasalah menunda pekerjaan.</h2>
+      <p class="lead">Isi form singkat, teknisi kami menghubungi lewat WhatsApp.</p>
+      <div class="hero-cta">
+        <a class="btn btn-pri" href="#booking" data-magnetic>Booking teknisi sekarang<span class="arw" aria-hidden="true">→</span></a>
+        <a class="btn btn-ghost" href="{{ route('prices.index') }}">Cek estimasi harga</a>
+      </div>
+    </div>
   </div>
 </section>
 @endsection

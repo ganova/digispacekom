@@ -8,10 +8,12 @@
 @endpush
 
 @section('content')
-<section class="c-hero c-hero-sm wrap">
-  <div>
-    <h1>Sudah sampai mana <em>servisnya?</em></h1>
-    <p>Pantau perbaikan perangkat tanpa perlu chat menanyakan status.</p>
+<section class="c-hero c-hero-sm">
+  <div class="c-blob" aria-hidden="true"><i></i><i></i></div>
+  <div class="wrap">
+    <span class="eyebrow fade-up" style="--fd:.05s">Cek status servis</span>
+    <h1 class="split">{!! \App\Support\Site::split([['Pantau servis'], ['tanpa perlu chat.', 'hl']]) !!}</h1>
+    <p class="lead fade-up" style="--fd:.5s">Lihat posisi perbaikan perangkat Anda kapan saja dengan nomor tiket.</p>
   </div>
 </section>
 

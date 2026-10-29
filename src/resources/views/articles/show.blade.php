@@ -9,22 +9,23 @@
 
 @section('content')
 @include('partials.page-hero', [
-    'crumb' => ' / <a href="'.route('articles.index').'">Artikel</a>',
+    'crumb' => '<span>/</span><a href="'.route('articles.index').'">Artikel</a>',
     'eyebrow' => $article->category.' · '.$article->published_at->translatedFormat('j F Y'),
     'title' => $article->title,
+    'lead' => $article->excerpt,
 ])
 
-<section class="b-sec">
+<section class="sec">
   <div class="wrap">
     {{-- Isi artikel ditulis admin (konten tepercaya) --}}
-    <article class="b-prose">{!! $article->body !!}</article>
+    <article class="prose prose-article rv">{!! $article->body !!}</article>
   </div>
 </section>
 
 @if ($more->isNotEmpty())
-<section class="b-sec b-sec-alt">
+<section class="sec sec-soft">
   <div class="wrap">
-    <h2>Artikel lainnya</h2>
+    <div class="sec-hd rv"><span class="eyebrow">Baca juga</span><h2>Artikel lainnya</h2></div>
     @include('articles._grid', ['articles' => $more])
   </div>
 </section>

@@ -25,7 +25,7 @@ class SiteTest extends TestCase
     {
         $this->get('/servis-panggilan?perangkat=Printer&keluhan=Paper+jam')
             ->assertOk()
-            ->assertSee('Teknisi kami yang datang.')
+            ->assertSee('Booking teknisi')
             ->assertSee('value="Printer" checked', false)
             ->assertSee('Paper jam');
 

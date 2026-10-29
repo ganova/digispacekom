@@ -24,6 +24,27 @@ class Site
         return asset($path).(is_file($file) ? '?v='.filemtime($file) : '');
     }
 
+    /**
+     * Pecah judul menjadi kata untuk animasi "naik per kata".
+     * $parts: [teks, kelas-opsional] — contoh [['Mitra IT untuk'], ['kantor.', 'grad']]
+     */
+    public static function split(array $parts): string
+    {
+        $html = '';
+        $i = 0;
+
+        foreach ($parts as $part) {
+            [$text, $class] = $part + [1 => null];
+
+            foreach (preg_split('/\s+/', trim($text)) as $word) {
+                $cls = $class ? ' class="'.e($class).'"' : '';
+                $html .= '<span class="w"><span'.$cls.' style="--wi:'.$i++.'">'.e($word).'</span></span> ';
+            }
+        }
+
+        return rtrim($html);
+    }
+
     public static function whatsappUrl(?string $text = null): string
     {
         $url = 'https://wa.me/'.config('site.whatsapp');
