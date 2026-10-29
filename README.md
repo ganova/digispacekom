@@ -15,7 +15,11 @@ Laravel 13 · PHP 8.5 (FPM) · Nginx · MariaDB 11.4, jalan di Docker. Cakupan m
 
 Form booking dan form penawaran menyimpan data ke tabel `bookings`, lalu mengarahkan pengunjung ke WhatsApp dengan pesan yang sudah terisi.
 
-## Menjalankan
+## Instal di server klien
+
+Ikuti **[docs/INSTALL-SERVER.md](docs/INSTALL-SERVER.md)**. Ringkasnya: `cp .env.example .env`, isi password, lalu `./prod.sh up -d --build`, dan sambungkan ke domain lewat Cloudflare Tunnel.
+
+## Menjalankan (pengembangan)
 
 ```bash
 docker compose up -d --build

@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Situs berjalan di belakang Cloudflare Tunnel + Nginx: percayai header X-Forwarded-*
+        // agar URL yang dibuat Laravel memakai https dan domain asli.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -1,0 +1,28 @@
+# Override untuk server klien. Dipakai bersama docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Cloudflare Tunnel ikut dijalankan bila ditambah: --profile tunnel
+
+services:
+  app:
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      LOG_LEVEL: warning
+
+  web:
+    ports: !override
+      - "${WEB_BIND:-127.0.0.1}:${WEB_PORT:-8080}:80"
+
+  db:
+    # database tidak dibuka ke luar container
+    ports: !reset []
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    profiles: ["tunnel"]
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      - web
