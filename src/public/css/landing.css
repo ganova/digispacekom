@@ -1,0 +1,80 @@
+/* Konsep A · Teknisi Datang (landing page iklan) */
+.cA{font-family:"Plus Jakarta Sans","Segoe UI",system-ui,sans-serif;color:#14234B;background:#fff;font-size:15px}
+.cA h1,.cA h2{letter-spacing:-.025em;line-height:1.12;font-weight:800}
+
+.a-top{background:#14234B;color:#B9C6E8;font-size:12px;padding:7px 14px;text-align:center}
+.a-top b{color:#9BE05A}
+.a-hd{border-bottom:1px solid #E6EBF5;background:#fff}
+.a-hd-in{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.a-nav{display:none}
+.a-nav a{text-decoration:none}
+.a-nav a:hover{color:#1F3F8F}
+.a-bk{background:#7AB929;color:#fff;font-weight:700;font-size:13.5px;padding:10px 16px;border-radius:10px;white-space:nowrap;text-decoration:none}
+.a-bk:hover{background:#6AA61F}
+@media (min-width:900px){
+  .a-nav{display:flex;gap:28px;font-weight:600;color:#45567F;margin-left:auto;margin-right:12px;font-size:14.5px}
+  .a-bk{font-size:15px;padding:12px 22px}
+}
+
+.a-hero{background:#1F3F8F;color:#fff;padding:32px 0 34px;position:relative;overflow:hidden}
+.a-hero::after{content:"";position:absolute;right:-90px;top:-90px;width:260px;height:260px;border-radius:50%;border:34px solid rgba(122,185,41,.25)}
+.a-hero-in{display:grid;gap:26px;position:relative;z-index:1}
+.a-hero h1{margin:0;font-size:clamp(30px,5.4vw,52px)}
+.a-hero h1 span{color:#A6E36A;display:block}
+.a-hero p{margin:14px 0 0;color:#C9D4F0;font-size:16.5px;max-width:44ch}
+.a-chk{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:9px;font-weight:600}
+.a-chk li::before{content:"✓";display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#7AB929;color:#fff;font-size:12px;margin-right:9px}
+@media (min-width:900px){
+  .a-hero{padding:64px 0}
+  .a-hero::after{width:520px;height:520px;right:-140px;top:-180px;border-width:70px}
+  .a-hero-in{grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+}
+
+.a-form{background:#fff;color:#14234B;border-radius:18px;padding:20px;display:grid;gap:14px;box-shadow:0 20px 40px -20px rgba(0,0,0,.5);scroll-margin-top:16px}
+.a-form h2{margin:0;font-size:20px}
+.a-form fieldset{border:0;margin:0;padding:0}
+.a-form legend,.a-form label{font-size:12px;font-weight:700;color:#6A7898;text-transform:uppercase;letter-spacing:.05em}
+.a-form label{display:grid;gap:6px}
+.a-form .opt{text-transform:none;letter-spacing:0;font-weight:500}
+.a-form input:not([type=radio]),.a-form textarea{border:1.5px solid #D8E0EF;border-radius:10px;padding:11px 13px;font-size:15px;color:#14234B;text-transform:none;letter-spacing:0;font-weight:500;width:100%;resize:vertical}
+.a-form input:focus,.a-form textarea:focus{border-color:#1F3F8F;outline:none}
+.a-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.a-chips label{display:block;text-transform:none;letter-spacing:0}
+.a-chips input{position:absolute;opacity:0;pointer-events:none}
+.a-chips span{display:block;font-size:13.5px;font-weight:600;color:#14234B;border:1.5px solid #D8E0EF;border-radius:999px;padding:7px 14px;cursor:pointer}
+.a-chips input:checked+span{border-color:#1F3F8F;background:#EAF0FC;color:#1F3F8F}
+.a-chips input:focus-visible+span{outline:3px solid #7AB929;outline-offset:2px}
+.a-send{background:#7AB929;color:#fff;font-weight:700;padding:14px;border-radius:10px;font-size:15.5px;border:0;cursor:pointer}
+.a-send:hover{background:#6AA61F}
+@media (min-width:900px){.a-form{padding:28px;border-radius:20px}}
+
+.a-sec{padding:40px 0}
+.a-sec-tight{padding-top:0}
+.a-center{text-align:center}
+.a-sec h2{margin:0 0 6px;font-size:clamp(24px,3.6vw,34px)}
+.a-sub{margin:0 0 20px;color:#5B6A8C;font-size:16px}
+@media (min-width:900px){.a-sec{padding:56px 0}.a-sec-tight{padding-top:0}}
+
+.a-svc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.a-svc a{border:1px solid #E3E8F3;border-radius:14px;padding:15px;display:grid;gap:7px;text-decoration:none;align-content:start}
+.a-svc a:hover{border-color:#1F3F8F}
+.a-svc .ic{width:42px;height:42px;border-radius:10px;background:#EAF0FC;color:#1F3F8F}
+.a-svc b{font-size:15px;line-height:1.25}
+.a-svc small{font-size:13px;color:#5B6A8C;line-height:1.4}
+@media (min-width:900px){
+  .a-svc{grid-template-columns:repeat(3,1fr);gap:18px}
+  .a-svc a{padding:22px;grid-template-columns:48px 1fr;column-gap:14px}
+  .a-svc .ic{width:48px;height:48px;grid-row:span 2}
+  .a-svc b{font-size:17px}.a-svc small{font-size:14px}
+}
+
+.a-steps{display:grid;gap:14px;background:#F3F7EC;border-radius:18px;padding:20px}
+.a-steps div{display:grid;grid-template-columns:40px 1fr;gap:12px;color:#4D5B7C}
+.a-steps i{font-style:normal;width:40px;height:40px;border-radius:50%;background:#7AB929;color:#fff;font-weight:800;display:grid;place-items:center;font-size:17px}
+.a-steps b{display:block;color:#14234B;font-size:17px}
+@media (min-width:900px){.a-steps{grid-template-columns:repeat(3,1fr);gap:30px;padding:32px 36px;border-radius:22px}}
+
+.a-cl{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.a-cl span{font-size:14px;font-weight:700;color:#7C88A6;border:1px dashed #CBD4E6;border-radius:8px;padding:10px 14px}
+.a-bk-lg{display:inline-block;margin-top:28px;font-size:16px;padding:14px 26px}
+.a-ft{background:#14234B}
