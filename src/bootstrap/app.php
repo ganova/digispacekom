@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Situs berjalan di belakang Cloudflare Tunnel + Nginx: percayai header X-Forwarded-*
         // agar URL yang dibuat Laravel memakai https dan domain asli.
         $middleware->trustProxies(at: '*');
+
+        // Tamu yang membuka halaman admin diarahkan ke login CMS
+        $middleware->redirectGuestsTo(fn () => route('admin.login'));
+        $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

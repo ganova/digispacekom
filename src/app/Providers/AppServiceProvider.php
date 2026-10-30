@@ -2,23 +2,21 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        // Konten dari CMS menimpa config/site.php
+        foreach (Setting::overrides() as $key => $value) {
+            config(["site.{$key}" => $value]);
+        }
     }
 }

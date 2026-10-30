@@ -24,6 +24,9 @@ Route::post('/booking', [BookingController::class, 'store'])->middleware('thrott
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
+// CMS admin
+require __DIR__.'/admin.php';
+
 // Landing page iklan (Konsep A)
 Route::get('/{landing}', [SiteController::class, 'landing'])
     ->whereIn('landing', array_keys(config('site.landings')))

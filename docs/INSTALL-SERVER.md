@@ -188,6 +188,15 @@ curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/    # harus 200
 `./prod.sh up -d`, lalu buka `http://<IP-server>:8080` di browser Windows. Kembalikan ke `127.0.0.1`
 dan jalankan `./prod.sh up -d` lagi setelah selesai (agar website tidak terbuka di jaringan kantor).
 
+**Buat akun admin CMS** (sekali, setelah website jalan). Password diketik di terminal dan tidak tampil di layar:
+
+```bash
+./prod.sh exec app php artisan admin:create
+```
+
+Masukkan email, nama, lalu password (minimal 10 karakter). Setelah website online, CMS dibuka di
+`https://digispacekom.net/admin`. Panduan pemakaiannya ada di [CMS-ADMIN.md](CMS-ADMIN.md).
+
 ---
 
 ## 5. Hubungkan ke domain dengan Cloudflare Tunnel
@@ -255,6 +264,11 @@ Di dashboard domain `digispacekom.net`:
 | **Rules → Redirect Rules** | `www.digispacekom.net/*` → `https://digispacekom.net/${1}` (301), agar hanya satu alamat |
 
 File CSS, JS, dan gambar sudah dikirim dengan header cache 30 hari, sehingga otomatis disimpan Cloudflare.
+
+**Lindungi `/admin` (disarankan):** CMS punya login dan pembatasan percobaan, tetapi alamat `/admin` terbuka untuk
+umum. Tambahkan lapisan kedua lewat **Cloudflare Zero Trust → Access → Applications → Add → Self-hosted**:
+domain `digispacekom.net`, path `admin`, kebijakan *Allow* hanya untuk email staf. Akses ke CMS lalu butuh kode
+dari email sebelum halaman login muncul. Gratis hingga 50 pengguna.
 
 **Redirect domain lama** (bila `digispacekomp.net` masih dikelola klien dan sudah di Cloudflare): buat Redirect Rule
 di domain lama → *All incoming requests* → *Dynamic* → `concat("https://digispacekom.net", http.request.uri.path)`,
@@ -328,19 +342,24 @@ https://digispacekom.net dari HP. Website harus tampil sendiri.
 - [ ] Uji kecepatan di **pagespeed.web.dev** (versi HP), simpan hasilnya untuk laporan sebelum/sesudah.
 - [ ] Daftarkan `https://digispacekom.net/sitemap.xml` di **Google Search Console**.
 
-**Konten contoh yang perlu diganti sebelum tayang:**
+- [ ] Login di `/admin` berhasil, dan halaman `/admin` tidak muncul di Google (sudah `noindex`).
 
-| Konten | Lokasi |
+**Konten contoh yang perlu diganti sebelum tayang.** Sebagian besar kini diubah lewat CMS (`/admin`), tanpa
+menyentuh kode:
+
+| Konten | Cara mengubah |
 |---|---|
-| Logo (masih tiruan) | `src/resources/views/partials/logo.blade.php`, `src/public/favicon.svg` |
-| Data perusahaan, layanan, klien, area, jam buka, email | `src/config/site.php` |
-| Daftar estimasi harga | `src/database/seeders/PriceItemSeeder.php` |
-| Artikel | `src/database/seeders/ArticleSeeder.php` |
-| Tiket contoh `DSK-1028` | `src/database/seeders/ServiceTicketSeeder.php` |
-| Janji layanan (garansi 30 hari, dsb.) | `src/config/site.php` dan teks di `src/resources/views/` |
+| Nama perusahaan, telepon, WhatsApp, email, alamat, jam buka | CMS → **Profil & kontak** |
+| Layanan (6 halaman layanan), tab beranda | CMS → **Layanan**, **Tab beranda** |
+| Klien, wilayah layanan, langkah layanan | CMS → **Klien, wilayah, langkah** |
+| Dua landing page iklan | CMS → **Landing page iklan** |
+| Daftar estimasi harga | CMS → **Daftar harga** (hapus/ubah contoh bawaan) |
+| Artikel | CMS → **Artikel** (hapus 3 artikel contoh) |
+| Tiket contoh `DSK-1028` | CMS → **Tiket servis** (hapus) |
+| Janji layanan "garansi 30 hari" yang tertulis di teks layanan dan landing | CMS → Layanan dan Landing page iklan |
+| Logo (masih tiruan) | Perlu developer: `src/resources/views/partials/logo.blade.php`, `src/public/favicon.svg` |
 
-Seeder hanya dijalankan otomatis saat database **masih kosong** (instalasi pertama). Setelah itu, ubah data
-lewat database atau minta developer.
+Seeder hanya dijalankan otomatis saat database **masih kosong** (instalasi pertama).
 
 ---
 
@@ -357,7 +376,9 @@ Semua perintah dijalankan di terminal server, dari `/opt/digispacekom`.
 | Restart semua | `./prod.sh restart` |
 | Matikan | `./prod.sh down` *(data tetap aman)* |
 | Nyalakan | `./prod.sh up -d` |
-| Lihat booking yang masuk | `./prod.sh exec db sh -c 'mariadb -u root -p"$MARIADB_ROOT_PASSWORD" digispacekom -e "select id,type,name,device,location,created_at from bookings order by id desc limit 20"'` |
+| Lihat booking yang masuk | CMS → **Permintaan masuk** (bisa diunduh sebagai CSV) |
+| Tambah akun admin | CMS → **Daftar admin**, atau `./prod.sh exec app php artisan admin:create` |
+| Lupa password admin (semua admin terkunci) | `./prod.sh exec app php artisan tinker`, lalu `App\Models\User::where('email','…')->first()->update(['password'=>'password-baru-minimal-10'])` |
 
 **Update website** setelah ada perubahan kode:
 
