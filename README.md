@@ -17,7 +17,7 @@ Form booking dan form penawaran menyimpan data ke tabel `bookings`, lalu mengara
 
 ## Instal di server klien
 
-Ikuti **[docs/INSTALL-SERVER.md](docs/INSTALL-SERVER.md)** (jalur utama: Windows 11 + WSL2 + Docker Desktop; ada catatan untuk Linux). Ringkasnya: `cp .env.example .env`, isi password, lalu `./prod.sh up -d --build`, dan sambungkan ke domain lewat Cloudflare Tunnel.
+Ikuti **[docs/INSTALL-SERVER.md](docs/INSTALL-SERVER.md)** (server klien: Linux dengan CasaOS). Ringkasnya: `cp .env.example .env`, isi password, lalu `./prod.sh up -d --build`, dan sambungkan ke domain lewat Cloudflare Tunnel.
 
 ## Menjalankan (pengembangan)
 
