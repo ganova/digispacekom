@@ -28,8 +28,10 @@
         <button type="button" data-fmt="h2" title="Judul bagian">H2</button>
         <button type="button" data-fmt="h3" title="Sub-judul">H3</button>
         <button type="button" data-fmt="p" title="Paragraf">¶</button>
-        <button type="button" data-fmt="b" title="Tebal"><b>B</b></button>
-        <button type="button" data-fmt="i" title="Miring"><i>I</i></button>
+        <span class="sep"></span>
+        <button type="button" data-fmt="b" title="Tebal (Ctrl+B)"><b>B</b></button>
+        <button type="button" data-fmt="i" title="Miring (Ctrl+I)"><i>I</i></button>
+        <span class="sep"></span>
         <button type="button" data-fmt="ul" title="Daftar butir">• Daftar</button>
         <button type="button" data-fmt="ol" title="Daftar nomor">1. Daftar</button>
         <button type="button" data-fmt="a" title="Tautan">Tautan</button>

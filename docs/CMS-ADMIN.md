@@ -29,6 +29,23 @@ Akun tambahan dibuat di menu **Daftar admin**. Semua admin punya akses penuh. Ga
 | **Profil & kontak** | Nama perusahaan, telepon, WhatsApp, email, alamat, jam buka. |
 | **Klien, wilayah, langkah** | Daftar klien, wilayah layanan, dan tiga langkah layanan. |
 
+## Pintasan & fitur tampilan
+
+| Pintasan | Fungsi |
+|---|---|
+| `Ctrl+K` atau `/` | Palet pencarian: lompat ke halaman, buat baru, atau cari tiket/permintaan/harga/artikel |
+| `Ctrl+S` | Simpan formulir yang sedang diubah |
+| `Ctrl+B` / `Ctrl+I` | Tebal / miring di editor artikel |
+| Ikon bulan/matahari | Tema gelap atau terang (diingat per perangkat) |
+| Ikon panel di kiri atas | Ringkas menu samping menjadi ikon saja |
+
+- Saat formulir diubah, muncul bilah **Ada perubahan belum disimpan** di bawah layar. Browser juga
+  memperingatkan bila halaman ditinggalkan sebelum disimpan.
+- Klik baris mana pun di tabel untuk membukanya.
+- Tahapan tiket bisa diurutkan dengan menyeret nomornya.
+- Di HP, menu cepat (Dasbor, Masuk, Tiket, Harga, Lainnya) ada di bawah layar.
+- Dasbor punya grafik permintaan 14 hari dan daftar periksa **Siap tayang** untuk konten contoh yang belum diganti.
+
 ## Alur kerja sehari-hari
 
 **Servis masuk:** buat tiket (nomor `DSK-xxxx` terisi otomatis), beri nomornya ke pelanggan. Saat status

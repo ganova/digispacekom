@@ -5,9 +5,9 @@
 
 @section('content')
 <p class="note" style="margin-bottom:16px">Halaman khusus untuk tujuan iklan (Google Ads, Instagram, dan lainnya). Alamatnya tetap; Anda mengubah isinya.</p>
-<div class="grid g2">
+<div class="grid-cards">
   @foreach ($landings as $slug => $page)
-    <section class="card">
+    <section class="card lift">
       <h2>{{ $page['headline'] }} <span class="muted">{{ $page['highlight'] }}</span></h2>
       <p class="sub mono">/{{ $slug }}</p>
       <p>{{ $page['lead'] }}</p>

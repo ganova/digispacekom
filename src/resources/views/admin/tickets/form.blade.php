@@ -53,7 +53,8 @@
         </div>
       @endforeach
     </div>
-    <button type="button" class="btn btn-sm" id="add-ev" style="margin-top:12px">+ Tambah tahap</button>
+    <button type="button" class="add-ev" id="add-ev">+ Tambah tahap</button>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Tips: seret nomor tahap untuk mengubah urutan.</p>
 
     <template id="ev-tpl">
       <div class="ev" data-state="next">
