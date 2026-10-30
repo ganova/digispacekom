@@ -8,6 +8,8 @@ services:
       APP_ENV: production
       APP_DEBUG: "false"
       LOG_LEVEL: warning
+      # produksi tidak boleh memakai password bawaan: wajib diisi di .env
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD belum diisi di file .env}
 
   web:
     ports: !override
@@ -16,6 +18,9 @@ services:
   db:
     # database tidak dibuka ke luar container
     ports: !reset []
+    environment:
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD belum diisi di file .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD belum diisi di file .env}
 
   cloudflared:
     image: cloudflare/cloudflared:latest
