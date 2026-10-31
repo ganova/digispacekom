@@ -97,3 +97,6 @@ html[data-theme-mode="dark"] .th-tg .i-moon{opacity:1;transform:none}
 :root[data-theme="dark"] .c-stock.ready{background:rgba(154,217,75,.14);color:var(--lime-300)}
 :root[data-theme="dark"] .c-stock.habis{background:rgba(255,107,91,.14);color:#FFB3A8}
 :root[data-theme="dark"] .c-row.has-img .c-thumb{background:#131E40}
+
+/* Teks sorotan memakai gradasi yang sama dengan beranda (tanpa latar stabilo) */
+:root[data-theme="dark"] .hl{background:linear-gradient(100deg,var(--lime-300) 0%,var(--lime-400) 35%,#7FB6FF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
