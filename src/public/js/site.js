@@ -172,4 +172,33 @@
   // Petunjuk tombol WhatsApp muncul sekali setelah beberapa detik
   const wa = document.querySelector('.wa-float');
   if (wa) setTimeout(() => { wa.classList.add('hint'); setTimeout(() => wa.classList.remove('hint'), 4500); }, 3500);
+
+  /* ---------- Tema: Otomatis (jam) → Terang → Gelap ---------- */
+  (() => {
+    const root = document.documentElement, btn = document.getElementById('theme-tg'), tip = document.getElementById('theme-tip');
+    if (!btn) return;
+    const modes = ['auto', 'light', 'dark'];
+    const names = { auto: 'Otomatis (gelap malam hari)', light: 'Terang', dark: 'Gelap' };
+    const isDark = m => m === 'dark' || (m === 'auto' && (new Date().getHours() >= 18 || new Date().getHours() < 6));
+    const apply = m => {
+      root.dataset.themeMode = m;
+      root.dataset.theme = isDark(m) ? 'dark' : 'light';
+      btn.setAttribute('aria-label', 'Tema: ' + names[m] + '. Klik untuk mengganti.');
+      tip.textContent = 'Tema: ' + names[m];
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark(m) ? '#060B1B' : '#070E24');
+    };
+    apply(root.dataset.themeMode || 'auto');
+    btn.addEventListener('click', () => {
+      const next = modes[(modes.indexOf(root.dataset.themeMode || 'auto') + 1) % modes.length];
+      try { localStorage.setItem('site-theme', next); } catch (e) {}
+      root.classList.add('theme-anim');
+      apply(next);
+      setTimeout(() => root.classList.remove('theme-anim'), 600);
+      btn.classList.add('say');
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => btn.classList.remove('say'), 1800);
+    });
+    // mode otomatis ikut berganti saat jam melewati 18.00 / 06.00 tanpa memuat ulang
+    setInterval(() => { if ((root.dataset.themeMode || 'auto') === 'auto') apply('auto'); }, 60000);
+  })();
 })();

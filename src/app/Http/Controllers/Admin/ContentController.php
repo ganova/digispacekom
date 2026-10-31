@@ -14,7 +14,8 @@ class ContentController extends Controller
     /** Bagian pengaturan => kunci config('site.*') yang dikelola. */
     public const SECTIONS = [
         'profil' => ['name', 'short', 'tagline', 'phone', 'whatsapp', 'email', 'city', 'address', 'area', 'hours', 'maps_query'],
-        'daftar' => ['clients', 'service_areas', 'steps'],
+        'daftar' => ['service_areas', 'steps'],
+        'klien' => ['clients'],
         'segmen' => ['segments'],
         'landing' => ['landings'],
         'layanan' => ['services', 'segments'],
@@ -66,10 +67,9 @@ class ContentController extends Controller
     public function updateLists(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'clients' => ['nullable', 'string', 'max:3000'],
             'service_areas' => ['nullable', 'string', 'max:3000'],
             'steps' => ['required', 'string', 'max:3000'],
-        ], [], ['clients' => 'daftar klien', 'service_areas' => 'wilayah layanan', 'steps' => 'langkah layanan']);
+        ], [], ['service_areas' => 'wilayah layanan', 'steps' => 'langkah layanan']);
 
         $steps = collect(self::lines($data['steps']))->map(function (string $line) {
             [$title, $text] = array_pad(array_map('trim', explode('|', $line, 2)), 2, '');
@@ -81,7 +81,6 @@ class ContentController extends Controller
             return back()->withInput()->withErrors(['steps' => 'Isi minimal satu langkah.']);
         }
 
-        Setting::put('clients', self::lines($data['clients'] ?? ''));
         Setting::put('service_areas', self::lines($data['service_areas'] ?? ''));
         Setting::put('steps', $steps);
 
@@ -167,6 +166,10 @@ class ContentController extends Controller
         $keys = self::SECTIONS[$section] ?? abort(404);
 
         Setting::reset(...$keys);
+
+        if ($section === 'klien') {
+            ClientController::prune();
+        }
 
         return back()->with('ok', 'Dikembalikan ke isi awal.');
     }

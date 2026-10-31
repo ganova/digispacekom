@@ -11,14 +11,24 @@ Buka `/admin`, isi email dan password. Akun pertama dibuat di server:
 ./prod.sh exec app php artisan admin:create
 ```
 
-Akun tambahan dibuat di menu **Daftar admin**. Semua admin punya akses penuh. Ganti password sendiri di
-**Akun saya**.
+Akun tambahan dibuat di menu **Pengguna & peran**. Ganti password sendiri di **Akun saya**.
+
+### Peran
+
+| Peran | Bisa melakukan |
+|---|---|
+| **Admin penuh** | Semua menu di bawah, termasuk permintaan masuk, isi situs, dan mengelola pengguna. |
+| **Staf** | Hanya **Tiket servis**, **Daftar harga** (termasuk harga suku cadang), dan **Artikel**, ditambah **Akun saya**. Menu lain tidak tampil, dan bila alamatnya dibuka langsung, akses ditolak. |
+
+Akun yang dibuat lewat perintah `admin:create` selalu admin penuh. Staf dibuat di **Pengguna & peran → Tambah
+pengguna**, dengan memilih peran *Staf*. Peran dan password pengguna bisa diubah lewat tombol **Ubah**. Minimal harus
+ada satu admin penuh, dan akun yang sedang dipakai tidak bisa dihapus atau diturunkan perannya.
 
 ## Menu
 
 | Menu | Untuk apa |
 |---|---|
-| **Dasbor** | Ringkasan: permintaan baru, jumlah tiket, harga, artikel. |
+| **Dasbor** | Ringkasan: permintaan baru, jumlah tiket, harga, artikel. Staf melihat versi ringkas tanpa data permintaan. |
 | **Permintaan masuk** | Semua isian form booking dan minta penawaran. Ubah status (Baru, Sudah dihubungi, Selesai, Batal), tulis catatan internal, cari, dan unduh CSV untuk Excel. Pengunjung juga sudah diarahkan ke WhatsApp, jadi data kontaknya ada di chat. |
 | **Tiket servis** | Buat tiket untuk perangkat yang diterima, lalu perbarui tahapannya. Pelanggan melihatnya di `/cek-status` dengan nomor tiket (nama tampil tersamar). |
 | **Daftar harga** | Item estimasi di halaman `/cek-harga`. Ada pratinjau tampilan harga saat mengetik. |
@@ -27,7 +37,9 @@ Akun tambahan dibuat di menu **Daftar admin**. Semua admin punya akses penuh. Ga
 | **Tab beranda** | Nama tab Kantor / Rumah / Sekolah dan layanan yang tampil di tiap tab. |
 | **Landing page iklan** | Judul, poin, formulir, dan teks mesin pencari untuk dua halaman iklan. |
 | **Profil & kontak** | Nama perusahaan, telepon, WhatsApp, email, alamat, jam buka. |
-| **Klien, wilayah, langkah** | Daftar klien, wilayah layanan, dan tiga langkah layanan. |
+| **Klien & logo** | Nama klien yang dipercaya, dengan **logo opsional** (PNG/JPG/WebP, maks. 2 MB). Bisa diurutkan dengan menyeret nomornya. Tampil di beranda, landing page iklan, dan halaman Tentang. |
+| **Wilayah & langkah** | Wilayah layanan dan tiga langkah layanan. |
+| **Pengguna & peran** | Tambah, ubah, dan hapus akun admin atau staf. |
 
 ## Pintasan & fitur tampilan
 
@@ -46,6 +58,18 @@ Akun tambahan dibuat di menu **Daftar admin**. Semua admin punya akses penuh. Ga
 - Di HP, menu cepat (Dasbor, Masuk, Tiket, Harga, Lainnya) ada di bawah layar.
 - Dasbor punya grafik permintaan 14 hari dan daftar periksa **Siap tayang** untuk konten contoh yang belum diganti.
 
+## Tampilan gelap di situs publik
+
+Situs untuk pelanggan punya tombol tema di header (ikon setengah lingkaran, matahari, atau bulan):
+
+| Mode | Perilaku |
+|---|---|
+| **Otomatis** (bawaan) | Gelap pukul **18.00–05.59** menurut jam di perangkat pengunjung, terang di luar jam itu. Berganti sendiri tanpa memuat ulang halaman. |
+| **Terang** / **Gelap** | Pilihan manual pengunjung, diingat di perangkat itu. |
+
+Jam otomatis ditentukan di skrip kecil pada `src/resources/views/layouts/base.blade.php` dan `src/public/js/site.js`
+(`h >= 18 || h < 6`) bila klien ingin jam lain.
+
 ## Alur kerja sehari-hari
 
 **Servis masuk:** buat tiket (nomor `DSK-xxxx` terisi otomatis), beri nomornya ke pelanggan. Saat status
@@ -62,11 +86,14 @@ situs ikut berubah.
 Halaman Profil, Layanan, Tab beranda, Landing, dan Klien/wilayah/langkah punya tautan
 **Kembalikan ke isi awal** (muncul bila ada perubahan). Isi awal berasal dari `src/config/site.php`.
 
+**Menambah klien lain:** Klien & logo → *Tambah klien* → isi nama (dan unggah logo bila ada) → *Simpan*. Logo tampil
+sebagai kotak putih agar terbaca di latar gelap maupun terang; logo berlatar transparan paling rapi.
+
 ## Yang belum bisa lewat CMS
 
 - Logo dan warna (perlu developer).
 - Menambah landing page iklan baru atau mengubah alamatnya (isi tiap landing bisa diubah).
-- Mengunggah gambar. Situs ini belum memakai foto.
+- Mengunggah foto atau gambar lain. Yang bisa diunggah baru logo klien.
 
 ## Catatan teknis
 
@@ -75,4 +102,7 @@ Halaman Profil, Layanan, Tab beranda, Landing, dan Klien/wilayah/langkah punya t
 - Isi artikel adalah HTML yang ditulis admin dan tidak disaring. Karena itu hanya berikan akun admin kepada
   orang yang dipercaya.
 - Halaman admin diberi `noindex` dan `Cache-Control: no-store`. Percobaan login dibatasi 6 per menit.
-- Backup database (`./prod.sh backup`) sudah mencakup semua konten CMS.
+- Backup database (`./prod.sh backup`) mencakup semua konten CMS, dan juga menyimpan logo klien dari
+  `src/public/uploads` ke `backups/uploads-*.tgz`.
+- Logo disimpan di `src/public/uploads/clients` dengan nama acak. Hanya PNG/JPG/WebP yang diterima (SVG ditolak karena
+  bisa memuat skrip).

@@ -61,7 +61,7 @@ class AdminTest extends TestCase
             "/admin/harga/{$price->id}/edit", '/admin/artikel', '/admin/artikel/create', "/admin/artikel/{$article->slug}/edit",
             '/admin/tiket', '/admin/tiket/create', "/admin/tiket/{$ticket->id}/edit", '/admin/layanan', '/admin/layanan/baru',
             '/admin/layanan/service-printer', '/admin/tab-beranda', '/admin/landing', '/admin/landing/servis-panggilan',
-            '/admin/profil', '/admin/daftar', '/admin/akun', '/admin/pengguna', '/admin/admin-baru',
+            '/admin/profil', '/admin/daftar', '/admin/akun', '/admin/pengguna', '/admin/pengguna/baru', '/admin/klien',
         ];
 
         foreach ($urls as $url) {
@@ -258,7 +258,7 @@ class AdminTest extends TestCase
 
         $this->assertTrue(\Hash::check('password-baru-22', $me->fresh()->password));
 
-        $this->post('/admin/pengguna', ['name' => 'Staf', 'email' => 'staf@contoh.test', 'password' => 'pendek', 'password_confirmation' => 'pendek'])
+        $this->post('/admin/pengguna', ['name' => 'Staf', 'email' => 'staf@contoh.test', 'role' => 'staf', 'password' => 'pendek', 'password_confirmation' => 'pendek'])
             ->assertSessionHasErrors('password');
     }
 }

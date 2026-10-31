@@ -16,6 +16,24 @@ class Site
         return $service ? ['slug' => $slug] + $service : null;
     }
 
+    /**
+     * Klien yang dipercaya. Bentuk bawaan di config berupa daftar nama; dari CMS berupa
+     * daftar [name, logo]. Selalu dikembalikan sebagai daftar [name, logo, logo_url].
+     */
+    public static function clients(): array
+    {
+        return collect(config('site.clients'))->map(function ($client) {
+            $client = is_array($client) ? $client : ['name' => (string) $client];
+            $logo = $client['logo'] ?? null;
+
+            return [
+                'name' => $client['name'],
+                'logo' => $logo,
+                'logo_url' => $logo ? asset('uploads/clients/'.$logo) : null,
+            ];
+        })->all();
+    }
+
     /** URL aset publik dengan versi berdasarkan waktu ubah file (cache busting). */
     public static function asset(string $path): string
     {

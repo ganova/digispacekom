@@ -11,6 +11,13 @@
 <meta property="og:title" content="@hasSection('title')@yield('title')@else{{ config('site.name') }}@endif">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta name="theme-color" content="#070E24">
+<meta name="color-scheme" content="light dark">
+<script>
+  /* Tema: Otomatis (gelap pukul 18.00–05.59 waktu pengunjung), Terang, atau Gelap. Dijalankan sebelum CSS agar tidak berkedip. */
+  (function(){var m='auto';try{m=localStorage.getItem('site-theme')||'auto'}catch(e){}
+  var h=new Date().getHours(),d=m==='dark'||(m==='auto'&&(h>=18||h<6)),r=document.documentElement;
+  r.dataset.theme=d?'dark':'light';r.dataset.themeMode=m})();
+</script>
 @stack('meta')
 <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +25,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400..700&family=Geist+Mono:wght@500;600&display=swap">
 <link rel="stylesheet" href="{{ \App\Support\Site::asset('css/base.css') }}">
 @stack('styles')
+<link rel="stylesheet" href="{{ \App\Support\Site::asset('css/dark.css') }}">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body class="@yield('body_class')" data-hero="@yield('hero_tone', 'light')">

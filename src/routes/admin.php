@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BookingController;
+use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PriceController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\AdminHeaders;
+use App\Http\Middleware\RequireAdmin;
 use Illuminate\Support\Facades\Route;
 
 // CMS: seluruh konten situs dikelola dari sini
@@ -24,44 +26,56 @@ Route::prefix('admin')->name('admin.')->middleware(AdminHeaders::class)->group(f
         Route::post('keluar', [AuthController::class, 'logout'])->name('logout');
         Route::get('/', DashboardController::class)->name('dashboard');
 
-        // Permintaan masuk dari form booking & penawaran
-        Route::get('permintaan/unduh', [BookingController::class, 'export'])->name('bookings.export');
-        Route::resource('permintaan', BookingController::class)->parameters(['permintaan' => 'booking'])
-            ->only(['index', 'show', 'update', 'destroy'])->names('bookings');
+        // Akun sendiri (admin maupun staf)
+        Route::get('akun', [UserController::class, 'account'])->name('account');
+        Route::put('akun', [UserController::class, 'updateAccount'])->name('account.update');
 
+        // Dapat dikerjakan staf: daftar harga & suku cadang, artikel, tiket servis
         Route::resource('harga', PriceController::class)->parameters(['harga' => 'price'])->except('show')->names('prices');
         Route::resource('artikel', ArticleController::class)->parameters(['artikel' => 'article'])->except('show')->names('articles');
         Route::resource('tiket', TicketController::class)->parameters(['tiket' => 'ticket'])->except('show')->names('tickets');
 
-        // Layanan, tab beranda, landing page
-        Route::get('layanan', [ServiceController::class, 'index'])->name('services.index');
-        Route::get('layanan/baru', [ServiceController::class, 'create'])->name('services.create');
-        Route::post('layanan', [ServiceController::class, 'store'])->name('services.store');
-        Route::get('layanan/{slug}', [ServiceController::class, 'edit'])->name('services.edit');
-        Route::put('layanan/{slug}', [ServiceController::class, 'update'])->name('services.update');
-        Route::delete('layanan/{slug}', [ServiceController::class, 'destroy'])->name('services.destroy');
-        Route::post('layanan/{slug}/pindah', [ServiceController::class, 'move'])->name('services.move');
+        // Hanya admin penuh
+        Route::middleware(RequireAdmin::class)->group(function () {
+            // Permintaan masuk dari form booking & penawaran
+            Route::get('permintaan/unduh', [BookingController::class, 'export'])->name('bookings.export');
+            Route::resource('permintaan', BookingController::class)->parameters(['permintaan' => 'booking'])
+                ->only(['index', 'show', 'update', 'destroy'])->names('bookings');
 
-        Route::get('tab-beranda', [ContentController::class, 'segments'])->name('segments');
-        Route::put('tab-beranda', [ContentController::class, 'updateSegments'])->name('segments.update');
+            // Layanan, tab beranda, landing page
+            Route::get('layanan', [ServiceController::class, 'index'])->name('services.index');
+            Route::get('layanan/baru', [ServiceController::class, 'create'])->name('services.create');
+            Route::post('layanan', [ServiceController::class, 'store'])->name('services.store');
+            Route::get('layanan/{slug}', [ServiceController::class, 'edit'])->name('services.edit');
+            Route::put('layanan/{slug}', [ServiceController::class, 'update'])->name('services.update');
+            Route::delete('layanan/{slug}', [ServiceController::class, 'destroy'])->name('services.destroy');
+            Route::post('layanan/{slug}/pindah', [ServiceController::class, 'move'])->name('services.move');
 
-        Route::get('landing', [ContentController::class, 'landings'])->name('landings.index');
-        Route::get('landing/{slug}', [ContentController::class, 'editLanding'])->name('landings.edit');
-        Route::put('landing/{slug}', [ContentController::class, 'updateLanding'])->name('landings.update');
+            Route::get('tab-beranda', [ContentController::class, 'segments'])->name('segments');
+            Route::put('tab-beranda', [ContentController::class, 'updateSegments'])->name('segments.update');
 
-        // Profil perusahaan & daftar
-        Route::get('profil', [ContentController::class, 'profile'])->name('profile');
-        Route::put('profil', [ContentController::class, 'updateProfile'])->name('profile.update');
-        Route::get('daftar', [ContentController::class, 'lists'])->name('lists');
-        Route::put('daftar', [ContentController::class, 'updateLists'])->name('lists.update');
-        Route::post('kembalikan/{section}', [ContentController::class, 'reset'])->name('reset');
+            Route::get('landing', [ContentController::class, 'landings'])->name('landings.index');
+            Route::get('landing/{slug}', [ContentController::class, 'editLanding'])->name('landings.edit');
+            Route::put('landing/{slug}', [ContentController::class, 'updateLanding'])->name('landings.update');
 
-        // Akun
-        Route::get('akun', [UserController::class, 'account'])->name('account');
-        Route::put('akun', [UserController::class, 'updateAccount'])->name('account.update');
-        Route::get('admin-baru', [UserController::class, 'create'])->name('users.create');
-        Route::get('pengguna', [UserController::class, 'index'])->name('users.index');
-        Route::post('pengguna', [UserController::class, 'store'])->name('users.store');
-        Route::delete('pengguna/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+            // Klien & logo
+            Route::get('klien', [ClientController::class, 'index'])->name('clients');
+            Route::put('klien', [ClientController::class, 'update'])->name('clients.update');
+
+            // Profil perusahaan & daftar
+            Route::get('profil', [ContentController::class, 'profile'])->name('profile');
+            Route::put('profil', [ContentController::class, 'updateProfile'])->name('profile.update');
+            Route::get('daftar', [ContentController::class, 'lists'])->name('lists');
+            Route::put('daftar', [ContentController::class, 'updateLists'])->name('lists.update');
+            Route::post('kembalikan/{section}', [ContentController::class, 'reset'])->name('reset');
+
+            // Pengguna CMS
+            Route::get('pengguna', [UserController::class, 'index'])->name('users.index');
+            Route::get('pengguna/baru', [UserController::class, 'create'])->name('users.create');
+            Route::post('pengguna', [UserController::class, 'store'])->name('users.store');
+            Route::get('pengguna/{user}/ubah', [UserController::class, 'edit'])->name('users.edit');
+            Route::put('pengguna/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('pengguna/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        });
     });
 });

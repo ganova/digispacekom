@@ -13,6 +13,7 @@
     $done = collect($todo)->where('done', true)->count();
     $pct = (int) round($done / max(1, count($todo)) * 100);
     $statuses = \App\Models\Booking::STATUSES;
+    $isAdmin = auth()->user()->isAdmin();
 @endphp
 
 @section('content')
@@ -22,7 +23,9 @@
     <p class="eyebrow" style="color:#A9B6DD">{{ now()->translatedFormat('l, j F Y') }}</p>
     <h1>{{ $greet }}, <em>{{ $first }}</em>.</h1>
     <p>
-      @if ($newBookings)
+      @if (! $isAdmin)
+        Siap mengisi tiket servis, daftar harga, dan artikel hari ini?
+      @elseif ($newBookings)
         Ada <strong style="color:#fff">{{ $newBookings }} permintaan baru</strong> yang menunggu dihubungi.
       @else
         Semua permintaan sudah ditindaklanjuti. Kerja bagus.
@@ -31,16 +34,18 @@
   </div>
   <div class="acts">
     <a class="btn btn-lime" href="{{ route('admin.tickets.create') }}">@include('admin.partials.icon', ['name' => 'plus', 'size' => 16]) Tiket baru</a>
-    <a class="btn" href="{{ route('admin.bookings.index', ['status' => 'baru']) }}">Lihat permintaan</a>
+    @if ($isAdmin)<a class="btn" href="{{ route('admin.bookings.index', ['status' => 'baru']) }}">Lihat permintaan</a>@else<a class="btn" href="{{ route('admin.articles.create') }}">Tulis artikel</a>@endif
   </div>
 </section>
 
 <div class="stats">
+  @if ($isAdmin)
   <a class="stat {{ $newBookings ? 'hot' : '' }}" style="--j:0" href="{{ route('admin.bookings.index', ['status' => 'baru']) }}">
     <span class="ic">@include('admin.partials.icon', ['name' => 'inbox'])</span>
     <div><b data-count="{{ $newBookings }}">{{ $newBookings }}</b><span>Permintaan baru</span></div>
     <span class="go">@include('admin.partials.icon', ['name' => 'arrow', 'size' => 16])</span>
   </a>
+  @endif
   <a class="stat" style="--j:1" href="{{ route('admin.tickets.index') }}">
     <span class="ic">@include('admin.partials.icon', ['name' => 'ticket'])</span>
     <div><b data-count="{{ $activeTickets }}">{{ $activeTickets }}</b><span>Servis berjalan · {{ $tickets }} tiket</span></div>
@@ -60,6 +65,7 @@
 
 <div class="two">
   <div class="col">
+    @if ($isAdmin)
     <section class="card">
       <div class="card-head">
         <div><h2>Permintaan 14 hari terakhir</h2><p class="sub">Isian form booking dan minta penawaran per hari.</p></div>
@@ -99,9 +105,13 @@
         </ul>
       @endif
     </section>
+    @else
+    @include('admin.partials.staff-shortcuts')
+    @endif
   </div>
 
   <div class="col">
+    @if ($isAdmin)
     <section class="card">
       <div class="card-head">
         <div><h2>Siap tayang</h2><p class="sub">Konten contoh yang perlu diganti sebelum situs diumumkan.</p></div>
@@ -119,6 +129,7 @@
         @endforeach
       </ul>
     </section>
+    @endif
 
     <section class="card">
       <div class="card-head">

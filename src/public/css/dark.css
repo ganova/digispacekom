@@ -1,0 +1,94 @@
+/* =========================================================
+   Mode gelap situs publik
+   Aktif bila <html data-theme="dark">. Diatur oleh skrip kecil di <head>:
+   "Otomatis" = gelap pukul 18.00–05.59 waktu pengunjung, atau pilihan manual (Terang/Gelap).
+   ========================================================= */
+
+/* ---------- Tombol tema di header ---------- */
+.th-tg{position:relative;flex:none;width:44px;height:44px;border-radius:50%;border:0;background:rgba(127,140,170,.14);color:inherit;cursor:pointer;display:grid;place-items:center;transition:background .3s,transform .3s var(--spring, ease)}
+.th-tg:hover{background:rgba(127,140,170,.26)}
+.th-tg:active{transform:scale(.92)}
+.th-tg svg{grid-area:1/1;width:20px;height:20px;transition:opacity .25s,transform .5s var(--spring, ease)}
+.th-tg .i-sun,.th-tg .i-moon{opacity:0;transform:rotate(-70deg) scale(.5)}
+html[data-theme-mode="auto"] .th-tg .i-auto,
+html[data-theme-mode="light"] .th-tg .i-sun,
+html[data-theme-mode="dark"] .th-tg .i-moon{opacity:1;transform:none}
+.th-tg .i-auto{opacity:0;transform:rotate(70deg) scale(.5)}
+.th-tg .tip{position:absolute;top:calc(100% + 8px);right:0;padding:6px 10px;border-radius:9px;background:#0A1533;color:#fff;font:600 12px/1.2 var(--f-body);white-space:nowrap;opacity:0;transform:translateY(-4px);pointer-events:none;transition:.2s}
+.th-tg:hover .tip,.th-tg:focus-visible .tip,.th-tg.say .tip{opacity:1;transform:none}
+@media (max-width:1079px){.th-tg{margin-left:auto}.hd-tg{margin-left:0}}
+@media (min-width:1080px){.th-tg{margin-left:auto}.hd-cta{margin-left:0}}
+
+/* ---------- Token ---------- */
+:root[data-theme="dark"]{
+  --bg:#060B1B;--surface:#0D1530;
+  --ink:#E7ECFA;--ink-2:#C4CCE6;--muted:#93A0C6;
+  --line:#1E2A50;--line-2:#17213F;
+  --blue:#8FB0FF;--blue-50:#0F1A3C;--blue-100:#16254F;
+  --lime-100:rgba(154,217,75,.14);--btn-bg:#2F5BD3;
+  --sh-sm:0 1px 2px rgba(0,0,0,.4),0 2px 8px -2px rgba(0,0,0,.4);
+  --sh:0 1px 2px rgba(0,0,0,.35),0 14px 34px -14px rgba(0,0,0,.65);
+  --sh-lg:0 2px 4px rgba(0,0,0,.3),0 32px 64px -24px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+:root[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
+:root[data-theme="dark"] ::selection{background:var(--lime-400);color:#060C1F}
+
+/* ---------- Header ---------- */
+:root[data-theme="dark"] .hd::before{background:rgba(6,11,27,.72);box-shadow:0 1px 0 rgba(255,255,255,.07)}
+:root[data-theme="dark"] .lg .mk::before{background:#2F5BD3}
+:root[data-theme="dark"] .skip{background:var(--surface);color:var(--ink)}
+
+/* ---------- Formulir ---------- */
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field textarea,
+:root[data-theme="dark"] .field select{background-color:#0A1229;color:var(--ink);border-color:#26335C}
+:root[data-theme="dark"] .field input:focus,
+:root[data-theme="dark"] .field textarea:focus,
+:root[data-theme="dark"] .field select:focus{border-color:#6A92FF}
+:root[data-theme="dark"] .errs{background:rgba(255,107,91,.12);color:#FFB3A8;border-color:rgba(255,107,91,.3)}
+:root[data-theme="dark"] .wa-float em{background:var(--surface);color:var(--ink)}
+
+/* ---------- Bagian & kartu ---------- */
+:root[data-theme="dark"] .sec-soft{background:linear-gradient(180deg,#0A1230,var(--bg))}
+:root[data-theme="dark"] .card:hover{box-shadow:inset 0 0 0 1px rgba(143,176,255,.35),var(--sh-lg)}
+:root[data-theme="dark"] .card:hover .card-go{background:#2F5BD3;color:#fff}
+:root[data-theme="dark"] .card-go{background:var(--blue-100)}
+
+:root[data-theme="dark"] .btn-pri:hover{--bg:#3E6BE0}
+
+/* ---------- Company ---------- */
+:root[data-theme="dark"] .seg{background:#131E40}
+:root[data-theme="dark"] .seg .seg-ind{background:#243768;box-shadow:0 4px 14px -4px rgba(0,0,0,.6)}
+:root[data-theme="dark"] .teaser{background:radial-gradient(90% 120% at 100% 0%,rgba(122,185,41,.16),transparent 60%),linear-gradient(160deg,#0D1530,#0B1A24)}
+:root[data-theme="dark"] .teaser-vis{background:#111B3B}
+:root[data-theme="dark"] .map{background:#0D1530;filter:invert(.92) hue-rotate(180deg) saturate(.8) brightness(.95)}
+
+/* ---------- Landing ---------- */
+:root[data-theme="dark"] .a-form{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px rgba(255,255,255,.1),0 50px 100px -30px rgba(0,0,0,.85)}
+:root[data-theme="dark"] .a-final{background:radial-gradient(70% 120% at 50% 0%,rgba(122,185,41,.2),transparent 60%),linear-gradient(180deg,#0D1530,#0B1A24)}
+:root[data-theme="dark"] .a-chips input:checked+span{background:#2F5BD3;color:#fff}
+
+/* ---------- Cek Harga & Status ---------- */
+:root[data-theme="dark"] .cC{background:var(--bg)}
+:root[data-theme="dark"] .c-srch{background:var(--surface)}
+:root[data-theme="dark"] .c-tags{background:#131E40}
+:root[data-theme="dark"] .c-row:hover{background:#111B3B}
+:root[data-theme="dark"] .c-svc a{background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
+
+/* ---------- Logo klien ---------- */
+:root[data-theme="dark"] .cl-chip{box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+
+/* Transisi halus saat tema berganti */
+:root.theme-anim *,:root.theme-anim *::before,:root.theme-anim *::after{transition:background-color .45s,color .45s,border-color .45s,box-shadow .45s!important}
+@media (prefers-reduced-motion:reduce){.th-tg svg{transition:none}}
+
+/* ---------- Susulan: kartu terang yang memakai warna teks bawaan ---------- */
+:root[data-theme="dark"] .float{background:rgba(17,27,59,.94);box-shadow:0 24px 48px -18px rgba(0,0,0,.8),inset 0 0 0 1px rgba(255,255,255,.08)}
+:root[data-theme="dark"] .c-box{background:rgba(13,21,48,.86);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 40px 80px -36px rgba(0,0,0,.8)}
+
+/* Teks hijau tua yang dibuat untuk latar terang */
+:root[data-theme="dark"] .flow-n,
+:root[data-theme="dark"] .ok,
+:root[data-theme="dark"] .a-badge,
+:root[data-theme="dark"] .c-svc .ic{color:var(--lime-300)}

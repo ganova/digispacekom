@@ -11,6 +11,9 @@
 
 return [
 
+    // folder logo klien dari CMS; null = public/uploads/clients (hanya diubah oleh tes)
+    'upload_dir' => null,
+
     'name' => 'PT Digital Space Komputer',
     'short' => 'Digital Space Komputer',
     'tagline' => 'Mitra IT untuk kantor, sekolah, dan instansi',

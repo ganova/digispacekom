@@ -194,7 +194,8 @@ dan jalankan `./prod.sh up -d` lagi setelah selesai (agar website tidak terbuka 
 ./prod.sh exec app php artisan admin:create
 ```
 
-Masukkan email, nama, lalu password (minimal 10 karakter). Setelah website online, CMS dibuka di
+Masukkan email, nama, lalu password (minimal 10 karakter). Akun ini berperan **admin penuh**; staf dengan akses
+terbatas (artikel, tiket servis, daftar harga) dibuat di CMS pada menu **Pengguna & peran**. Setelah website online, CMS dibuka di
 `https://digispacekom.net/admin`. Panduan pemakaiannya ada di [CMS-ADMIN.md](CMS-ADMIN.md).
 
 ---
@@ -351,7 +352,7 @@ menyentuh kode:
 |---|---|
 | Nama perusahaan, telepon, WhatsApp, email, alamat, jam buka | CMS → **Profil & kontak** |
 | Layanan (6 halaman layanan), tab beranda | CMS → **Layanan**, **Tab beranda** |
-| Klien, wilayah layanan, langkah layanan | CMS → **Klien, wilayah, langkah** |
+| Klien, wilayah layanan, langkah layanan | CMS → **Klien & logo** dan **Wilayah & langkah** |
 | Dua landing page iklan | CMS → **Landing page iklan** |
 | Daftar estimasi harga | CMS → **Daftar harga** (hapus/ubah contoh bawaan) |
 | Artikel | CMS → **Artikel** (hapus 3 artikel contoh) |
@@ -377,7 +378,7 @@ Semua perintah dijalankan di terminal server, dari `/opt/digispacekom`.
 | Matikan | `./prod.sh down` *(data tetap aman)* |
 | Nyalakan | `./prod.sh up -d` |
 | Lihat booking yang masuk | CMS → **Permintaan masuk** (bisa diunduh sebagai CSV) |
-| Tambah akun admin | CMS → **Daftar admin**, atau `./prod.sh exec app php artisan admin:create` |
+| Tambah admin atau staf | CMS → **Pengguna & peran**, atau `./prod.sh exec app php artisan admin:create` (admin penuh) |
 | Lupa password admin (semua admin terkunci) | `./prod.sh exec app php artisan tinker`, lalu `App\Models\User::where('email','…')->first()->update(['password'=>'password-baru-minimal-10'])` |
 
 **Update website** setelah ada perubahan kode:

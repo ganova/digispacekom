@@ -76,7 +76,7 @@
     <div class="wrap"><small>Dipercaya kantor &amp; instansi</small></div>
     <div class="marquee">
       @foreach ([1, 2] as $copy)
-        <div @if ($copy === 2) aria-hidden="true" @endif>@foreach (config('site.clients') as $client)<span>{{ $client }}</span>@endforeach</div>
+        <div @if ($copy === 2) aria-hidden="true" @endif>@foreach (\App\Support\Site::clients() as $client)@if ($client['logo_url'])<i class="cl-chip" title="{{ $client['name'] }}"><img src="{{ $client['logo_url'] }}" alt="{{ $client['name'] }}" loading="lazy" decoding="async"></i>@else<span>{{ $client['name'] }}</span>@endif @endforeach</div>
       @endforeach
     </div>
   </div>

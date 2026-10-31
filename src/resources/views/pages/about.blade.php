@@ -36,8 +36,8 @@
   <div class="aurora aurora-soft" aria-hidden="true"><i></i><i></i></div>
   <div class="wrap">
     <div class="sec-hd rv"><span class="eyebrow eyebrow-inv">Klien</span><h2>Dipercaya kantor &amp; instansi.</h2></div>
-    <div class="clients">
-      @foreach (config('site.clients') as $client)<div class="spot rv" style="--d:{{ $loop->index }}">{{ $client }}</div>@endforeach
+    <div class="clients" id="klien">
+      @foreach (\App\Support\Site::clients() as $client)<div class="spot rv" style="--d:{{ $loop->index }}">@if ($client['logo_url'])<i class="cl-chip cl-chip-lg"><img src="{{ $client['logo_url'] }}" alt="{{ $client['name'] }}" loading="lazy" decoding="async"></i><small>{{ $client['name'] }}</small>@else{{ $client["name"] }} @endif</div>@endforeach
     </div>
   </div>
 </section>

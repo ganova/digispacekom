@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
-@section('title', 'Klien, wilayah, langkah')
-@section('heading', 'Klien, wilayah, langkah')
+@section('title', 'Wilayah & langkah')
+@section('heading', 'Wilayah & langkah')
 
 @section('content')
 @php
@@ -13,7 +13,6 @@
   <p class="sub">Satu baris satu butir. Baris kosong diabaikan.</p>
 
   <div class="grid">
-    <x-admin.field name="clients" label="Klien yang dipercaya" :rows="7" :value="implode("\n", config('site.clients'))" hint="Tampil di beranda dan halaman Tentang. Pakai nama klien yang sudah setuju namanya dipublikasikan." />
     <x-admin.field name="service_areas" label="Wilayah layanan" :rows="7" :value="implode("\n", config('site.service_areas'))" />
     <x-admin.field name="steps" label="Langkah layanan" :rows="5" :value="$steps" required hint="Format: Judul | penjelasan singkat. Contoh: Booking | Isi form atau chat WhatsApp." />
   </div>

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-/** Akun admin dan profil akun yang sedang login. */
+/** Akun CMS (admin penuh & staf) dan profil akun yang sedang login. */
 class UserController extends Controller
 {
     public function index(): View
@@ -21,7 +21,7 @@ class UserController extends Controller
 
     public function create(): View
     {
-        return view('admin.users.create');
+        return view('admin.users.form', ['user' => new User(['role' => 'staf'])]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -29,12 +29,41 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:150', 'unique:users,email'],
+            'role' => ['required', Rule::in(array_keys(User::ROLES))],
             'password' => ['required', 'string', 'min:10', 'confirmed'],
-        ], [], ['name' => 'nama', 'password' => 'password']);
+        ], [], ['name' => 'nama', 'password' => 'password', 'role' => 'peran']);
 
         User::create($data);
 
-        return redirect()->route('admin.users.index')->with('ok', 'Admin ditambahkan.');
+        return redirect()->route('admin.users.index')->with('ok', 'Pengguna ditambahkan.');
+    }
+
+    public function edit(User $user): View
+    {
+        return view('admin.users.form', ['user' => $user]);
+    }
+
+    public function update(Request $request, User $user): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
+            'role' => ['required', Rule::in(array_keys(User::ROLES))],
+            'password' => ['nullable', 'string', 'min:10', 'confirmed'],
+        ], [], ['name' => 'nama', 'password' => 'password', 'role' => 'peran']);
+
+        // peran tidak boleh diturunkan bila itu satu-satunya admin penuh
+        if ($user->isAdmin() && $data['role'] !== 'admin' && $this->lastAdmin($user)) {
+            return back()->withInput()->withErrors(['role' => 'Minimal harus ada satu admin penuh.']);
+        }
+
+        if (blank($data['password'] ?? null)) {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.users.index')->with('ok', 'Pengguna diperbarui.');
     }
 
     public function destroy(User $user): RedirectResponse
@@ -43,9 +72,13 @@ class UserController extends Controller
             return back()->withErrors(['users' => 'Anda tidak bisa menghapus akun yang sedang dipakai.']);
         }
 
+        if ($user->isAdmin() && $this->lastAdmin($user)) {
+            return back()->withErrors(['users' => 'Minimal harus ada satu admin penuh.']);
+        }
+
         $user->delete();
 
-        return back()->with('ok', 'Admin dihapus.');
+        return back()->with('ok', 'Pengguna dihapus.');
     }
 
     public function account(): View
@@ -79,5 +112,10 @@ class UserController extends Controller
         $user->save();
 
         return back()->with('ok', 'Akun diperbarui.');
+    }
+
+    private function lastAdmin(User $user): bool
+    {
+        return User::where('role', 'admin')->where('id', '!=', $user->id)->doesntExist();
     }
 }

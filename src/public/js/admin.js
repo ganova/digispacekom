@@ -121,7 +121,8 @@
   const savebar = $('#savebar');
   let dirtyForm = null, leaving = false;
   const tracked = $$('#content form[method=post]').filter(f => !f.dataset.confirm && !f.classList.contains('filters') && $('button[type=submit]', f) && $$('input:not([type=hidden]), textarea, select', f).length > 1);
-  const snapshot = f => new URLSearchParams(new FormData(f)).toString();
+  // berkas dihitung lewat nama dan ukurannya agar memilih logo baru dianggap perubahan
+  const snapshot = f => [...new FormData(f)].map(([k, v]) => k + '=' + (v instanceof File ? v.name + ':' + v.size : v)).join('&');
   tracked.forEach(f => {
     f._initial = snapshot(f);
     const check = () => {
@@ -296,20 +297,19 @@
     sync();
   }
 
-  /* ---------- Tahapan tiket: tambah, hapus, urutkan, seret ---------- */
-  const list2 = $('#events');
-  if (list2) {
-    const form = list2.closest('form');
+  /* ---------- Daftar berulang (tahapan tiket, klien): tambah, hapus, urutkan, seret ---------- */
+  const repeater = (list, tpl, addBtn) => {
+    const form = list.closest('form');
     const changed = () => form.dispatchEvent(new Event('ev-change'));
-    const tpl = $('#ev-tpl');
-    const renumber = () => $$('.ev', list2).forEach((row, i) => {
+    const renumber = () => $$('.ev', list).forEach((row, i) => {
       $('.n', row).textContent = i + 1;
-      $$('[name]', row).forEach(f => { f.name = f.name.replace(/events\[[^\]]*\]/, 'events[' + i + ']'); });
-      row.dataset.state = $('select', row).value;
+      $$('[name]', row).forEach(f => { f.name = f.name.replace(/^(\w+)\[[^\]]*\]/, '$1[' + i + ']'); });
+      const sel = $('select', row);
+      if (sel) row.dataset.state = sel.value;
     });
     // animasi FLIP saat baris berpindah
     const flip = fn => {
-      const rows = $$('.ev', list2), first = new Map(rows.map(r => [r, r.getBoundingClientRect().top]));
+      const rows = $$('.ev', list), first = new Map(rows.map(r => [r, r.getBoundingClientRect().top]));
       fn();
       if (reduce) return;
       rows.forEach(r => {
@@ -317,13 +317,13 @@
         if (d) r.animate([{ transform: `translateY(${d}px)` }, { transform: 'none' }], { duration: 320, easing: 'cubic-bezier(.22,1,.36,1)' });
       });
     };
-    $('#add-ev')?.addEventListener('click', () => {
-      list2.append(tpl.content.cloneNode(true));
+    addBtn?.addEventListener('click', () => {
+      list.append(tpl.content.cloneNode(true));
       renumber();
-      $$('.ev', list2).at(-1).querySelector('input')?.focus();
+      $$('.ev', list).at(-1).querySelector('input')?.focus();
       changed();
     });
-    list2.addEventListener('click', e => {
+    list.addEventListener('click', e => {
       const row = e.target.closest('.ev');
       if (!row) return;
       if (e.target.closest('[data-del]')) {
@@ -337,33 +337,43 @@
       renumber();
       changed();
     });
-    list2.addEventListener('change', e => { if (e.target.matches('select')) e.target.closest('.ev').dataset.state = e.target.value; });
+    list.addEventListener('change', e => {
+      if (e.target.matches('select')) e.target.closest('.ev').dataset.state = e.target.value;
+      // pratinjau logo yang baru dipilih
+      if (e.target.matches('input[type=file]')) {
+        const prev = $('.cl-prev', e.target.closest('.ev')), file = e.target.files[0];
+        if (prev && file) prev.innerHTML = '<img alt="Pratinjau logo" src="' + URL.createObjectURL(file) + '">';
+      }
+    });
 
-    // seret nomor tahap untuk mengurutkan
+    // seret nomor untuk mengurutkan
     let drag = null;
-    list2.addEventListener('pointerdown', e => { const n = e.target.closest('.n'); if (n) n.closest('.ev').draggable = true; });
-    list2.addEventListener('dragstart', e => { drag = e.target.closest('.ev'); drag?.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
-    list2.addEventListener('dragover', e => {
+    list.addEventListener('pointerdown', e => { const n = e.target.closest('.n'); if (n) n.closest('.ev').draggable = true; });
+    list.addEventListener('dragstart', e => { drag = e.target.closest('.ev'); drag?.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    list.addEventListener('dragover', e => {
       if (!drag) return;
       e.preventDefault();
       const over = e.target.closest('.ev');
-      $$('.ev.over', list2).forEach(r => r.classList.remove('over'));
+      $$('.ev.over', list).forEach(r => r.classList.remove('over'));
       if (over && over !== drag) over.classList.add('over');
     });
-    list2.addEventListener('drop', e => {
+    list.addEventListener('drop', e => {
       e.preventDefault();
       const over = e.target.closest('.ev');
       if (drag && over && over !== drag) {
-        const after = [...list2.children].indexOf(drag) < [...list2.children].indexOf(over);
+        const after = [...list.children].indexOf(drag) < [...list.children].indexOf(over);
         flip(() => after ? over.after(drag) : over.before(drag));
         renumber();
         changed();
       }
     });
-    list2.addEventListener('dragend', () => {
-      $$('.ev', list2).forEach(r => { r.classList.remove('dragging', 'over'); r.draggable = false; });
+    list.addEventListener('dragend', () => {
+      $$('.ev', list).forEach(r => { r.classList.remove('dragging', 'over'); r.draggable = false; });
       drag = null;
     });
     renumber();
-  }
+  };
+  const evList = $('#events'), clList = $('#clients');
+  if (evList) repeater(evList, $('#ev-tpl'), $('#add-ev'));
+  if (clList) repeater(clList, $('#cl-tpl'), $('#add-client'));
 })();

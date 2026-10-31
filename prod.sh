@@ -24,6 +24,11 @@ if [ "$1" = "backup" ]; then
         sh -c 'mariadb-dump -u root -p"$MARIADB_ROOT_PASSWORD" --single-transaction digispacekom' | gzip > "$FILE"
     # simpan 14 backup terakhir saja
     ls -1t backups/db-*.sql.gz | tail -n +15 | xargs -r rm --
+    # logo klien dari CMS ikut dicadangkan
+    if [ -d src/public/uploads ]; then
+        tar czf "backups/uploads-$(date +%Y%m%d-%H%M).tgz" -C src/public uploads
+        ls -1t backups/uploads-*.tgz | tail -n +15 | xargs -r rm --
+    fi
     echo "Backup tersimpan: $FILE"
     exit 0
 fi

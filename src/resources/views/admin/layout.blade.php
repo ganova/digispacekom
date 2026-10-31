@@ -28,23 +28,30 @@
             ['admin.dashboard', 'Dasbor', 'home', 'admin.dashboard'],
         ],
         'Operasional' => [
-            ['admin.bookings.index', 'Permintaan masuk', 'inbox', 'admin.bookings.*'],
+            ['admin.bookings.index', 'Permintaan masuk', 'inbox', 'admin.bookings.*', true],
             ['admin.tickets.index', 'Tiket servis', 'ticket', 'admin.tickets.*'],
             ['admin.prices.index', 'Daftar harga', 'tag', 'admin.prices.*'],
         ],
         'Konten situs' => [
             ['admin.articles.index', 'Artikel', 'doc', 'admin.articles.*'],
-            ['admin.services.index', 'Layanan', 'wrench', 'admin.services.*'],
-            ['admin.segments', 'Tab beranda', 'tabs', 'admin.segments*'],
-            ['admin.landings.index', 'Landing page iklan', 'rocket', 'admin.landings.*'],
-            ['admin.profile', 'Profil & kontak', 'building', 'admin.profile*'],
-            ['admin.lists', 'Klien, wilayah, langkah', 'list', 'admin.lists*'],
+            ['admin.services.index', 'Layanan', 'wrench', 'admin.services.*', true],
+            ['admin.segments', 'Tab beranda', 'tabs', 'admin.segments*', true],
+            ['admin.landings.index', 'Landing page iklan', 'rocket', 'admin.landings.*', true],
+            ['admin.clients', 'Klien & logo', 'badge', 'admin.clients*', true],
+            ['admin.profile', 'Profil & kontak', 'building', 'admin.profile*', true],
+            ['admin.lists', 'Wilayah & langkah', 'list', 'admin.lists*', true],
         ],
         'Akun' => [
             ['admin.account', 'Akun saya', 'user', 'admin.account*'],
-            ['admin.users.index', 'Daftar admin', 'users', 'admin.users.*'],
+            ['admin.users.index', 'Pengguna & peran', 'users', 'admin.users.*', true],
         ],
     ];
+
+    $isAdmin = auth()->user()->isAdmin();
+    $nav = collect($nav)
+        ->map(fn ($items) => array_values(array_filter($items, fn ($i) => $isAdmin || empty($i[4]))))
+        ->filter()
+        ->all();
 
     $group = 'Ringkasan';
     foreach ($nav as $g => $items) {
@@ -63,12 +70,15 @@
         }
     }
     foreach ([
-        ['Buat tiket servis', 'admin.tickets.create', 'ticket'],
-        ['Tambah item harga', 'admin.prices.create', 'tag'],
-        ['Tulis artikel', 'admin.articles.create', 'doc'],
-        ['Tambah layanan', 'admin.services.create', 'wrench'],
-        ['Tambah admin', 'admin.users.create', 'users'],
-    ] as [$label, $route, $icon]) {
+        ['Buat tiket servis', 'admin.tickets.create', 'ticket', false],
+        ['Tambah item harga', 'admin.prices.create', 'tag', false],
+        ['Tulis artikel', 'admin.articles.create', 'doc', false],
+        ['Tambah layanan', 'admin.services.create', 'wrench', true],
+        ['Tambah pengguna', 'admin.users.create', 'users', true],
+    ] as [$label, $route, $icon, $adminOnly]) {
+        if ($adminOnly && ! $isAdmin) {
+            continue;
+        }
         $commands[] = ['label' => $label, 'url' => route($route), 'group' => 'Buat baru', 'icon' => 'plus'];
     }
     $commands[] = ['label' => 'Lihat situs', 'url' => route('home'), 'group' => 'Situs', 'icon' => 'external', 'blank' => true];
@@ -97,7 +107,7 @@
       <button type="submit" data-tip="Keluar">@include('admin.partials.icon', ['name' => 'logout'])<span class="lbl">Keluar</span></button>
     </form>
   </nav>
-  <div class="side-user"><span class="avatar">{{ $initials }}</span><div class="who"><strong>{{ $user->name }}</strong>{{ $user->email }}</div></div>
+  <div class="side-user"><span class="avatar">{{ $initials }}</span><div class="who"><strong>{{ $user->name }}</strong>{{ $isAdmin ? 'Admin penuh' : 'Staf' }}</div></div>
 </aside>
 <div class="scrim" id="scrim"></div>
 
@@ -136,11 +146,15 @@
 </div>
 
 <nav class="bnav" aria-label="Menu cepat">
-  <a href="{{ route('admin.dashboard') }}" @class(['on' => request()->routeIs('admin.dashboard')])>@include('admin.partials.icon', ['name' => 'home', 'size' => 20])Dasbor</a>
-  <a href="{{ route('admin.bookings.index') }}" @class(['on' => request()->routeIs('admin.bookings.*')])>@include('admin.partials.icon', ['name' => 'inbox', 'size' => 20])<span>Masuk</span>@if ($newCount)<i>{{ $newCount }}</i>@endif</a>
-  <a href="{{ route('admin.tickets.index') }}" @class(['on' => request()->routeIs('admin.tickets.*')])>@include('admin.partials.icon', ['name' => 'ticket', 'size' => 20])Tiket</a>
-  <a href="{{ route('admin.prices.index') }}" @class(['on' => request()->routeIs('admin.prices.*')])>@include('admin.partials.icon', ['name' => 'tag', 'size' => 20])Harga</a>
-  <button type="button" data-open-side>@include('admin.partials.icon', ['name' => 'grid', 'size' => 20])Lainnya</button>
+  <a href="{{ route('admin.dashboard') }}" @class(['on' => request()->routeIs('admin.dashboard')])>@include('admin.partials.icon', ['name' => 'home', 'size' => 20])<span>Dasbor</span></a>
+  @if ($isAdmin)
+    <a href="{{ route('admin.bookings.index') }}" @class(['on' => request()->routeIs('admin.bookings.*')])>@include('admin.partials.icon', ['name' => 'inbox', 'size' => 20])<span>Masuk</span>@if ($newCount)<i>{{ $newCount }}</i>@endif</a>
+  @else
+    <a href="{{ route('admin.articles.index') }}" @class(['on' => request()->routeIs('admin.articles.*')])>@include('admin.partials.icon', ['name' => 'doc', 'size' => 20])<span>Artikel</span></a>
+  @endif
+  <a href="{{ route('admin.tickets.index') }}" @class(['on' => request()->routeIs('admin.tickets.*')])>@include('admin.partials.icon', ['name' => 'ticket', 'size' => 20])<span>Tiket</span></a>
+  <a href="{{ route('admin.prices.index') }}" @class(['on' => request()->routeIs('admin.prices.*')])>@include('admin.partials.icon', ['name' => 'tag', 'size' => 20])<span>Harga</span></a>
+  <button type="button" data-open-side>@include('admin.partials.icon', ['name' => 'grid', 'size' => 20])<span>Lainnya</span></button>
 </nav>
 
 {{-- Toast --}}
@@ -178,15 +192,15 @@
 </dialog>
 <script type="application/json" id="commands">{!! json_encode([
     'items' => $commands,
-    'search' => [
+    'search' => array_values(array_filter([
+        $isAdmin ? ['label' => 'Cari permintaan', 'url' => route('admin.bookings.index')] : null,
         ['label' => 'Cari tiket', 'url' => route('admin.tickets.index')],
-        ['label' => 'Cari permintaan', 'url' => route('admin.bookings.index')],
         ['label' => 'Cari harga', 'url' => route('admin.prices.index')],
         ['label' => 'Cari artikel', 'url' => route('admin.articles.index')],
-    ],
+    ])),
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
 <template id="icons">
-  @foreach (['home', 'inbox', 'ticket', 'tag', 'doc', 'wrench', 'tabs', 'rocket', 'building', 'list', 'user', 'users', 'external', 'plus', 'search'] as $ic)
+  @foreach (['home', 'inbox', 'ticket', 'tag', 'doc', 'wrench', 'tabs', 'rocket', 'building', 'list', 'user', 'users', 'external', 'plus', 'search', 'badge'] as $ic)
     <span data-ic="{{ $ic }}">@include('admin.partials.icon', ['name' => $ic, 'size' => 16])</span>
   @endforeach
 </template>
