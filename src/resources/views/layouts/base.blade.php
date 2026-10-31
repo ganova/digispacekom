@@ -19,6 +19,7 @@
   r.dataset.theme=d?'dark':'light';r.dataset.themeMode=m})();
 </script>
 @stack('meta')
+@if (config('site.google_verify'))<meta name="google-site-verification" content="{{ config('site.google_verify') }}">@endif
 @php($fav = \App\Support\Site::favicon())
 <link rel="icon" href="{{ $fav['url'] }}" type="{{ $fav['type'] }}">
 @if ($fav['custom'])<link rel="apple-touch-icon" href="{{ $fav['url'] }}">@endif
@@ -29,6 +30,10 @@
 @stack('styles')
 <link rel="stylesheet" href="{{ \App\Support\Site::asset('css/dark.css') }}">
 <script>document.documentElement.classList.add('js')</script>
+@if (config('site.analytics_id'))
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ config('site.analytics_id') }}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','{{ config('site.analytics_id') }}');</script>
+@endif
 </head>
 <body class="@yield('body_class')" data-hero="@yield('hero_tone', 'light')">
 <a class="skip" href="#main">Langsung ke isi</a>

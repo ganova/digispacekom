@@ -179,6 +179,28 @@ class AdminTest extends TestCase
         $this->assertDatabaseMissing('settings', ['key' => 'name']);
     }
 
+    public function test_analytics_and_search_console_codes_are_injected_only_when_set(): void
+    {
+        $this->actingAs($this->admin());
+        $base = [
+            'name' => 'PT Contoh', 'short' => 'Contoh', 'tagline' => 'Tagline', 'phone' => '0812-0000-1111',
+            'whatsapp' => '0812-0000-1111', 'email' => 'halo@contoh.test', 'city' => 'Depok', 'address' => 'Jl. Contoh 1',
+            'area' => 'Jabodetabek', 'hours' => '09.00–17.00', 'maps_query' => 'Contoh Depok',
+        ];
+
+        $this->get('/')->assertOk()->assertDontSee('googletagmanager')->assertDontSee('google-site-verification');
+
+        $this->put('/admin/profil', $base + ['analytics_id' => 'G-ABC123XYZ9', 'google_verify' => 'abcDEF1234567890_abcdefgh-XYZ'])
+            ->assertRedirect()->assertSessionHasNoErrors();
+        $this->get('/')->assertOk()->assertSee('googletagmanager.com/gtag/js?id=G-ABC123XYZ9', false)
+            ->assertSee('name="google-site-verification" content="abcDEF1234567890_abcdefgh-XYZ"', false);
+
+        $this->put('/admin/profil', $base + ['analytics_id' => '<script>x</script>'])->assertSessionHasErrors('analytics_id');
+
+        $this->put('/admin/profil', $base + ['analytics_id' => '', 'google_verify' => ''])->assertRedirect()->assertSessionHasNoErrors();
+        $this->get('/')->assertOk()->assertDontSee('googletagmanager');
+    }
+
     public function test_invalid_whatsapp_is_rejected(): void
     {
         $this->actingAs($this->admin());

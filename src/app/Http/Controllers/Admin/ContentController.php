@@ -15,7 +15,7 @@ class ContentController extends Controller
 {
     /** Bagian pengaturan => kunci config('site.*') yang dikelola. */
     public const SECTIONS = [
-        'profil' => ['name', 'short', 'tagline', 'phone', 'whatsapp', 'email', 'city', 'address', 'area', 'hours', 'maps_query', 'logo', 'logo_dark', 'logo_show_name', 'favicon', 'favicon_custom'],
+        'profil' => ['name', 'short', 'tagline', 'phone', 'whatsapp', 'email', 'city', 'address', 'area', 'hours', 'maps_query', 'logo', 'logo_dark', 'logo_show_name', 'favicon', 'favicon_custom', 'analytics_id', 'google_verify'],
         'tentang' => ['about_lead', 'about_body', 'vision', 'mission'],
         'daftar' => ['service_areas', 'steps'],
         'klien' => ['clients'],
@@ -47,10 +47,14 @@ class ContentController extends Controller
             'area' => ['required', 'string', 'max:80'],
             'hours' => ['required', 'string', 'max:80'],
             'maps_query' => ['required', 'string', 'max:160'],
+            'analytics_id' => ['nullable', 'regex:/^(G-[A-Z0-9]{6,14}|UA-\d+-\d+)$/'],
+            'google_verify' => ['nullable', 'regex:/^[A-Za-z0-9_-]{20,100}$/'],
             'logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
             'logo_dark' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
             'favicon' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:1024'],
         ], [
+            'analytics_id.regex' => 'ID Analytics tidak valid. Contoh: G-ABC123XYZ9.',
+            'google_verify.regex' => 'Kode verifikasi tidak valid. Salin hanya isi content="..." dari Google.',
             'whatsapp.regex' => 'Nomor WhatsApp tidak valid. Contoh: 0813-8502-8980.',
             'logo.mimes' => 'Logo harus berformat PNG, JPG, atau WebP.',
             'logo_dark.mimes' => 'Logo latar gelap harus berformat PNG, JPG, atau WebP.',

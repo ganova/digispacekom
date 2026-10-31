@@ -41,6 +41,8 @@ return [
     'address' => 'Bekasi, Jawa Barat',
     'area' => 'Jabodetabek',
     'hours' => 'Senin–Sabtu 08.00–20.00',
+    'analytics_id' => null,     // ID Google Analytics 4 (G-XXXXXXXXXX); kosong = tidak ada pelacakan
+    'google_verify' => null,    // kode verifikasi Google Search Console (meta tag)
     'maps_query' => 'PT Digital Space Komputer Bekasi',
 
     // Tentang, visi, dan misi (teks contoh; ganti lewat CMS)

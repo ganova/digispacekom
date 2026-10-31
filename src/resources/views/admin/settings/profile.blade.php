@@ -73,6 +73,13 @@
     <x-admin.field name="maps_query" label="Kata kunci Google Maps" :value="config('site.maps_query')" required class="span2 field" hint="Teks yang dicari di peta pada halaman Kontak." />
   </div>
 
+  <h3 style="margin:26px 0 4px">Google</h3>
+  <p class="muted" style="margin:0 0 14px;font-size:14px">Opsional. Kosongkan bila belum dipakai; tidak ada pelacakan sebelum ID diisi.</p>
+  <div class="grid g2">
+    <x-admin.field name="analytics_id" label="ID Google Analytics" :value="config('site.analytics_id')" hint="Format G-ABC123XYZ9. Ada di Analytics → Admin → Data streams." />
+    <x-admin.field name="google_verify" label="Kode verifikasi Search Console" :value="config('site.google_verify')" hint="Metode tag HTML: salin hanya isi content dari tag meta yang diberikan Google." />
+  </div>
+
   <div class="actions"><button class="btn btn-primary" type="submit">Simpan</button></div>
 </form>
 @include('admin.partials.reset', ['section' => 'profil', 'custom' => $custom])
