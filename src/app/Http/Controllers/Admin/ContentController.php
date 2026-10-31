@@ -15,7 +15,7 @@ class ContentController extends Controller
 {
     /** Bagian pengaturan => kunci config('site.*') yang dikelola. */
     public const SECTIONS = [
-        'profil' => ['name', 'short', 'tagline', 'phone', 'whatsapp', 'email', 'city', 'address', 'area', 'hours', 'maps_query', 'logo', 'logo_dark'],
+        'profil' => ['name', 'short', 'tagline', 'phone', 'whatsapp', 'email', 'city', 'address', 'area', 'hours', 'maps_query', 'logo', 'logo_dark', 'logo_show_name', 'favicon', 'favicon_custom'],
         'tentang' => ['about_lead', 'about_body', 'vision', 'mission'],
         'daftar' => ['service_areas', 'steps'],
         'klien' => ['clients'],
@@ -49,20 +49,24 @@ class ContentController extends Controller
             'maps_query' => ['required', 'string', 'max:160'],
             'logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
             'logo_dark' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
+            'favicon' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:1024'],
         ], [
             'whatsapp.regex' => 'Nomor WhatsApp tidak valid. Contoh: 0813-8502-8980.',
             'logo.mimes' => 'Logo harus berformat PNG, JPG, atau WebP.',
             'logo_dark.mimes' => 'Logo latar gelap harus berformat PNG, JPG, atau WebP.',
             'logo.max' => 'Ukuran logo maksimal 2 MB.',
+            'favicon.mimes' => 'Ikon tab harus berformat PNG, JPG, atau WebP.',
+            'favicon.max' => 'Ukuran ikon tab maksimal 1 MB.',
             'logo_dark.max' => 'Ukuran logo latar gelap maksimal 2 MB.',
         ], [
-            'logo' => 'logo', 'logo_dark' => 'logo latar gelap',
+            'logo' => 'logo', 'logo_dark' => 'logo latar gelap', 'favicon' => 'ikon tab',
             'name' => 'nama perusahaan', 'short' => 'nama singkat', 'tagline' => 'tagline', 'phone' => 'telepon',
             'email' => 'email', 'city' => 'kota', 'address' => 'alamat', 'area' => 'wilayah layanan',
             'hours' => 'jam operasional', 'maps_query' => 'kata kunci peta',
         ]);
 
-        unset($data['logo'], $data['logo_dark']);
+        unset($data['logo'], $data['logo_dark'], $data['favicon']);
+        Setting::put('logo_show_name', $request->boolean('logo_show_name'));
 
         foreach ($data as $key => $value) {
             Setting::put($key, $value);
@@ -94,14 +98,46 @@ class ContentController extends Controller
             Setting::put($key, $value);
         }
 
+        $this->saveFavicon($request);
+
         self::pruneBrand();
 
         return null;
     }
 
+    /** Ikon tab browser: unggahan sendiri menang; bila tidak ada, diturunkan dari logo yang diunggah. */
+    private function saveFavicon(Request $request): void
+    {
+        $favicon = config('site.favicon');
+        $custom = (bool) config('site.favicon_custom');
+
+        if ($request->boolean('favicon_remove')) {
+            $favicon = null;
+            $custom = false;
+        }
+
+        if ($file = $request->file('favicon')) {
+            if ($name = Images::squareIcon($file->getRealPath(), 'brand', 192, false)) {
+                $favicon = $name;
+                $custom = true;
+            }
+        }
+
+        $logo = config('site.logo');
+
+        if (! $custom && $logo && ($request->hasFile('logo') || $favicon === null)) {
+            $favicon = Images::squareIcon(Images::dir('brand').'/'.$logo, 'brand');
+        } elseif (! $custom && ! $logo) {
+            $favicon = null;
+        }
+
+        Setting::put('favicon', $favicon);
+        Setting::put('favicon_custom', $custom);
+    }
+
     public static function pruneBrand(): void
     {
-        Images::prune('brand', array_values(array_filter([config('site.logo'), config('site.logo_dark')])));
+        Images::prune('brand', array_values(array_filter([config('site.logo'), config('site.logo_dark'), config('site.favicon')])));
     }
 
     public function about(): View

@@ -53,6 +53,52 @@ class Images
         return $name;
     }
 
+    /**
+     * Ikon persegi PNG (untuk tab browser) dari sebuah gambar. Logo yang jauh lebih lebar daripada tingginya
+     * biasanya berisi ikon di kiri dan tulisan di kanan, jadi yang diambil kotak di sisi kiri.
+     */
+    public static function squareIcon(string $sourcePath, string $folder, int $size = 192, bool $cropWide = true): ?string
+    {
+        if (! function_exists('imagecreatefromstring') || ! function_exists('imagepng') || ! is_file($sourcePath)) {
+            return null;
+        }
+
+        try {
+            $src = @imagecreatefromstring(file_get_contents($sourcePath));
+
+            if (! $src) {
+                return null;
+            }
+
+            $w = imagesx($src);
+            $h = imagesy($src);
+
+            if ($cropWide && $w > $h * 1.4 && ($cropped = imagecrop($src, ['x' => 0, 'y' => 0, 'width' => $h, 'height' => $h]))) {
+                $src = $cropped;
+                $w = $h;
+            }
+
+            $scale = min($size / $w, $size / $h);
+            $nw = max(1, (int) round($w * $scale));
+            $nh = max(1, (int) round($h * $scale));
+
+            $dst = imagecreatetruecolor($size, $size);
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+            imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 0, 0, 0, 127));
+            imagealphablending($dst, true);
+            imagecopyresampled($dst, $src, intdiv($size - $nw, 2), intdiv($size - $nh, 2), 0, 0, $nw, $nh, $w, $h);
+            imagesavealpha($dst, true);
+
+            File::ensureDirectoryExists(self::dir($folder));
+            $name = 'fav-'.Str::random(16).'.png';
+
+            return imagepng($dst, self::dir($folder).'/'.$name) ? $name : null;
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
     public static function delete(string $folder, ?string $file): void
     {
         if ($file && preg_match(self::NAME, $file)) {

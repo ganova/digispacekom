@@ -40,6 +40,7 @@ class BrandAndAboutTest extends TestCase
     private function profile(array $extra = []): array
     {
         return $extra + [
+            'logo_show_name' => '1',
             'name' => 'PT Contoh', 'short' => 'Contoh', 'tagline' => 'Tagline', 'phone' => '0812-0000-1111',
             'whatsapp' => '0812-0000-1111', 'email' => 'a@contoh.test', 'city' => 'Bekasi', 'address' => 'Jl. Contoh 1',
             'area' => 'Jabodetabek', 'hours' => '08.00-17.00', 'maps_query' => 'Contoh Bekasi',
@@ -157,5 +158,83 @@ class BrandAndAboutTest extends TestCase
 
         $this->assertStringNotContainsString('hlIn', $css);
         $this->assertStringNotContainsString('.hl::after', $css);
+    }
+
+    public function test_company_name_stays_next_to_the_logo_unless_hidden(): void
+    {
+        $this->actingAs($this->admin());
+
+        $this->put('/admin/profil', $this->profile(['logo' => $this->png()]))->assertRedirect();
+        $this->get('/')->assertOk()->assertSee('lg-name', false)->assertSee('DIGITAL SPACE');
+
+        // logo yang sudah memuat nama: tulisan disembunyikan (kotak dicentang dilewatkan)
+        $payload = $this->profile();
+        unset($payload['logo_show_name']);
+        $this->put('/admin/profil', $payload)->assertRedirect();
+        $this->assertFalse((bool) config('site.logo_show_name'));
+        $this->get('/')->assertOk()->assertDontSee('lg-name', false);
+    }
+
+    public function test_favicon_follows_the_uploaded_logo_and_can_be_overridden(): void
+    {
+        if (! function_exists('imagecreatefromstring') || ! function_exists('imagepng')) {
+            $this->markTestSkipped('GD tidak tersedia.');
+        }
+
+        $this->actingAs($this->admin());
+
+        // tanpa logo: ikon bawaan
+        $this->get('/')->assertSee('favicon.svg', false);
+
+        $this->put('/admin/profil', $this->profile(['logo' => $this->png()]))->assertRedirect();
+        $auto = config('site.favicon');
+        $this->assertNotNull($auto);
+        $this->assertFalse((bool) config('site.favicon_custom'));
+        $this->assertFileExists($this->uploads.'/brand/'.$auto);
+        [$w, $h] = getimagesize($this->uploads.'/brand/'.$auto);
+        $this->assertSame([192, 192], [$w, $h]);
+        $this->get('/')->assertSee('uploads/brand/'.$auto, false)->assertDontSee('favicon.svg', false);
+        $this->get('/admin/masuk')->assertDontSee('favicon.svg', false);
+
+        // unggahan sendiri menang dan tidak ditimpa saat logo diganti
+        $this->put('/admin/profil', $this->profile(['favicon' => $this->png('ikon.png')]))->assertRedirect();
+        $custom = config('site.favicon');
+        $this->assertNotSame($auto, $custom);
+        $this->assertTrue((bool) config('site.favicon_custom'));
+        $this->assertFileDoesNotExist($this->uploads.'/brand/'.$auto);
+
+        $this->put('/admin/profil', $this->profile(['logo' => $this->png('baru.png')]))->assertRedirect();
+        $this->assertSame($custom, config('site.favicon'));
+
+        // kembali otomatis dari logo
+        $this->put('/admin/profil', $this->profile(['favicon_remove' => '1']))->assertRedirect();
+        $this->assertFalse((bool) config('site.favicon_custom'));
+        $this->assertNotNull(config('site.favicon'));
+        $this->assertNotSame($custom, config('site.favicon'));
+
+        // tanpa logo lagi: ikon bawaan kembali
+        $this->put('/admin/profil', $this->profile(['logo_remove' => '1']))->assertRedirect();
+        $this->assertNull(config('site.favicon'));
+        $this->get('/')->assertSee('favicon.svg', false);
+    }
+
+    public function test_wide_logo_favicon_uses_the_left_square(): void
+    {
+        if (! function_exists('imagecreatetruecolor') || ! function_exists('imagepng')) {
+            $this->markTestSkipped('GD tidak tersedia.');
+        }
+
+        $src = tempnam(sys_get_temp_dir(), 'wide').'.png';
+        $im = imagecreatetruecolor(600, 100);
+        imagefill($im, 0, 0, imagecolorallocate($im, 255, 255, 255));
+        imagefilledrectangle($im, 0, 0, 99, 99, imagecolorallocate($im, 200, 0, 0)); // ikon merah di kiri
+        imagepng($im, $src);
+
+        $name = \App\Support\Images::squareIcon($src, 'brand', 64);
+        $icon = imagecreatefrompng(\App\Support\Images::dir('brand').'/'.$name);
+        $rgb = imagecolorat($icon, 32, 32);
+
+        $this->assertSame(200, ($rgb >> 16) & 0xFF); // bagian tengah ikon = merah, bukan putih tulisan
+        @unlink($src);
     }
 }

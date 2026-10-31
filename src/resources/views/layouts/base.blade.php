@@ -19,7 +19,9 @@
   r.dataset.theme=d?'dark':'light';r.dataset.themeMode=m})();
 </script>
 @stack('meta')
-<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+@php($fav = \App\Support\Site::favicon())
+<link rel="icon" href="{{ $fav['url'] }}" type="{{ $fav['type'] }}">
+@if ($fav['custom'])<link rel="apple-touch-icon" href="{{ $fav['url'] }}">@endif
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400..700&family=Geist+Mono:wght@500;600&display=swap">

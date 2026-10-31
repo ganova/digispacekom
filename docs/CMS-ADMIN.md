@@ -93,6 +93,9 @@ Halaman Profil, Layanan, Tab beranda, Landing, dan Klien/wilayah/langkah punya t
 
 **Memasang logo perusahaan:** Profil & kontak → *Unggah logo* (latar terang). Bila punya versi untuk latar gelap (mis. logo putih), unggah di kolom kedua; bila tidak, logo terang otomatis tampil di kotak putih pada latar gelap. Logo dipakai di header dan footer.
 
+- **Nama perusahaan di samping logo:** secara bawaan tulisan nama tetap tampil di samping logo (cocok untuk logo yang hanya berisi ikon). Bila logo yang diunggah sudah memuat nama, matikan kotak *Tampilkan nama perusahaan di samping logo*.
+- **Ikon tab browser (favicon):** dibuat otomatis dari logo (bagian kiri bila logonya lebar). Untuk hasil terbaik unggah gambar persegi di kolom *Ikon tab browser*. Browser menyimpan ikon lama cukup lama; bila belum berubah, muat ulang dengan Ctrl+F5 atau tutup-buka tab.
+
 **Mengisi visi dan misi:** Tentang, visi & misi → isi Tentang singkat, Visi, dan Misi (satu baris satu butir) → *Simpan*.
 
 **Menambah klien lain:** Klien & logo → *Tambah klien* → isi nama (dan unggah logo bila ada) → *Simpan*. Logo tampil

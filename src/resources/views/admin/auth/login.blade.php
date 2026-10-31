@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Masuk · CMS {{ config('site.short') }}</title>
-<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+@php($fav = \App\Support\Site::favicon())
+<link rel="icon" href="{{ $fav['url'] }}" type="{{ $fav['type'] }}">
+@if ($fav['custom'])<link rel="apple-touch-icon" href="{{ $fav['url'] }}">@endif
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600..800&family=Geist:wght@400..700&display=swap">

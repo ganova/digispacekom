@@ -27,6 +27,9 @@ return [
     // logo perusahaan dari CMS (nama berkas di public/uploads/brand); null = logo bawaan
     'logo' => null,
     'logo_dark' => null,
+    'logo_show_name' => true,   // tulisan nama perusahaan di samping logo (matikan bila logo sudah memuat nama)
+    'favicon' => null,          // ikon tab browser (diturunkan dari logo atau diunggah sendiri)
+    'favicon_custom' => false,
 
     'name' => 'PT Digital Space Komputer',
     'short' => 'Digital Space Komputer',

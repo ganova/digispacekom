@@ -6,7 +6,11 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="view-transition" content="same-origin">
 <title>@yield('title', 'Dasbor') · CMS {{ config('site.short') }}</title>
-<link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+@php
+    $fav = \App\Support\Site::favicon();
+@endphp
+<link rel="icon" href="{{ $fav['url'] }}" type="{{ $fav['type'] }}">
+@if ($fav['custom'])<link rel="apple-touch-icon" href="{{ $fav['url'] }}">@endif
 <script>
   // tema & sidebar diterapkan sebelum render agar tidak berkedip
   try {

@@ -41,6 +41,24 @@
     </div>
   </div>
 
+  <div class="logo-box" style="margin-top:14px">
+    <label class="check" style="margin-bottom:14px"><input type="checkbox" name="logo_show_name" value="1" @checked(config('site.logo_show_name'))> Tampilkan nama perusahaan di samping logo</label>
+    <p class="muted" style="margin:-6px 0 18px;font-size:13.5px">Matikan bila logo yang diunggah sudah memuat nama perusahaan. Nyalakan bila logonya hanya ikon.</p>
+
+    <div class="field">
+      <label for="f-favicon">Ikon tab browser <span class="muted" style="font-weight:400">(opsional)</span></label>
+      <div class="img-pick">
+        <span class="img-prev" id="favicon-prev">@if (config('site.favicon'))<img src="{{ \App\Support\Images::url('brand', config('site.favicon')) }}" alt="Ikon tab">@else<em>Ikon bawaan</em>@endif</span>
+        <div>
+          <label class="btn btn-sm cl-pick"><input id="f-favicon" type="file" name="favicon" accept="image/png,image/jpeg,image/webp" hidden data-preview="#favicon-prev">Unggah ikon</label>
+          @if (config('site.favicon_custom'))<label class="check cl-rm" style="margin-top:8px"><input type="checkbox" name="favicon_remove" value="1"> Kembali otomatis dari logo</label>@endif
+          <small style="display:block;margin-top:8px">Tanpa unggahan, ikon dibuat otomatis dari logo (bagian kiri bila logonya lebar). Untuk hasil terbaik unggah gambar persegi. Browser menyimpan ikon lama cukup lama; bila belum berubah, muat ulang dengan Ctrl+F5.</small>
+        </div>
+      </div>
+      @error('favicon')<em class="err">{{ $message }}</em>@enderror
+    </div>
+  </div>
+
   <div class="grid g2" style="margin-top:22px">
     <x-admin.field name="name" label="Nama perusahaan" :value="config('site.name')" required />
     <x-admin.field name="short" label="Nama singkat" :value="config('site.short')" required hint="Dipakai di judul tab browser." />

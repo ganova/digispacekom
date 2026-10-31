@@ -324,4 +324,4 @@ body[data-hero=dark] .hd{margin-bottom:calc(var(--hd-h) * -1)}
 .lg-chip .lg-img{height:30px}
 .lg.inv .lg-l,body[data-hero=dark] .hd:not(.scrolled) .lg-l,.menu-open .hd .lg-l,:root[data-theme="dark"] .hd .lg-l{display:none}
 .lg.inv .lg-d,body[data-hero=dark] .hd:not(.scrolled) .lg-d,.menu-open .hd .lg-d,:root[data-theme="dark"] .hd .lg-d{display:block}
-.lg.inv .lg-chip.lg-d,body[data-hero=dark] .hd:not(.scrolled) .lg-chip.lg-d,.menu-open .hd .lg-chip.lg-d,:root[data-theme="dark"] .hd .lg-chip.lg-d{display:inline-flex}
+.lg.inv .lg-chip.lg-d,body[data-hero=dark] .hd:not(.scrolled) .lg-chip.lg-d,.menu-open .hd .lg-chip.lg-d,:root[data-theme="dark"] .hd .lg-chip.lg-d{display:inline-flex}.lg-name{display:block;min-width:0}

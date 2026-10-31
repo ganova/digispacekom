@@ -34,6 +34,25 @@ class Site
         })->all();
     }
 
+    /** Nama untuk tulisan di samping logo: [utama, kecil], mis. ['DIGITAL SPACE', 'KOMPUTER']. */
+    public static function wordmark(): array
+    {
+        $words = preg_split('/\s+/', trim((string) config('site.short'))) ?: [];
+        $small = count($words) > 2 ? array_pop($words) : null;
+
+        return [mb_strtoupper(implode(' ', $words)), $small ? mb_strtoupper($small) : null];
+    }
+
+    /** Ikon tab browser: dari logo yang diunggah di CMS, atau ikon bawaan. */
+    public static function favicon(): array
+    {
+        $file = config('site.favicon');
+
+        return $file
+            ? ['url' => Images::url('brand', $file), 'type' => 'image/png', 'custom' => true]
+            : ['url' => asset('favicon.svg'), 'type' => 'image/svg+xml', 'custom' => false];
+    }
+
     /** URL aset publik dengan versi berdasarkan waktu ubah file (cache busting). */
     public static function asset(string $path): string
     {
