@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class PriceItem extends Model
 {
-    public const CATEGORIES = [
-        'laptop' => 'Laptop',
-        'pc' => 'PC',
-        'macbook' => 'MacBook',
-        'printer' => 'Printer',
-        'jaringan' => 'Jaringan',
-    ];
+    public const STOCK = ['ready' => 'Ready stok', 'habis' => 'Stok habis'];
 
-    protected $fillable = ['category', 'name', 'price_min', 'price_max', 'price_suffix', 'note', 'keywords', 'sort'];
+    /** Kategori yang berlaku (bawaan config, dapat diubah lewat CMS). */
+    public static function categories(): array
+    {
+        return config('site.price_categories');
+    }
+
+    protected $fillable = ['category', 'name', 'price_min', 'price_max', 'price_suffix', 'note', 'image', 'stock', 'keywords', 'sort'];
 
     public function scopeSearch(Builder $query, ?string $term): void
     {

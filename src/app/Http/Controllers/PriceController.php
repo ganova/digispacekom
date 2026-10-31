@@ -12,7 +12,7 @@ class PriceController extends Controller
     public function index(Request $request): View
     {
         $q = trim((string) $request->query('q'));
-        $category = array_key_exists((string) $request->query('kategori'), PriceItem::CATEGORIES)
+        $category = array_key_exists((string) $request->query('kategori'), PriceItem::categories())
             ? $request->query('kategori')
             : null;
 

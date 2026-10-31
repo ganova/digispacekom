@@ -16,6 +16,7 @@ class ServiceController extends Controller
     public const ICONS = [
         'laptop' => 'Laptop', 'monitor' => 'Monitor / MacBook', 'printer' => 'Printer', 'server' => 'Server',
         'chip' => 'Chip / PC', 'box' => 'Kotak / Pengadaan', 'shield' => 'Perisai', 'pin' => 'Lokasi',
+        'camera' => 'Kamera / CCTV', 'gamepad' => 'Game / Konsol', 'wifi' => 'WiFi / Jaringan',
     ];
 
     public function index(): View
@@ -125,16 +126,16 @@ class ServiceController extends Controller
             'title' => ['required', 'string', 'max:80'],
             'icon' => ['required', 'in:'.implode(',', array_keys(self::ICONS))],
             'short' => ['required', 'string', 'max:140'],
-            'price_category' => ['nullable', 'in:'.implode(',', array_keys(PriceItem::CATEGORIES))],
+            'price_category' => ['nullable', 'in:'.implode(',', array_keys(PriceItem::categories()))],
             'intro' => ['required', 'string', 'max:700'],
-            'problems' => ['required', 'string', 'max:1500'],
+            'problems' => ['nullable', 'string', 'max:1500'],
         ], [], [
-            'title' => 'nama layanan', 'icon' => 'ikon', 'short' => 'ringkasan', 'price_category' => 'kategori harga',
-            'intro' => 'pengantar', 'problems' => 'daftar masalah',
+            'title' => 'Nama layanan', 'icon' => 'Ikon', 'short' => 'Ringkasan', 'price_category' => 'Kategori harga',
+            'intro' => 'Pengantar', 'problems' => 'Daftar masalah',
         ]);
 
-        $data['problems'] = ContentController::lines($data['problems']);
-        $data['price_category'] = $data['price_category'] ?: null;
+        $data['problems'] = ContentController::lines($data['problems'] ?? '');
+        $data['price_category'] = ($data['price_category'] ?? null) ?: null;
 
         return $data;
     }

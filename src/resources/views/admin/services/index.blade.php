@@ -18,7 +18,7 @@
         <tr>
           <td data-l="Layanan"><a class="t" href="{{ route('admin.services.edit', $slug) }}">{{ $s['title'] }}</a><span class="sub mono">/layanan/{{ $slug }}</span></td>
           <td data-l="Ringkasan">{{ $s['short'] }}</td>
-          <td data-l="Kategori harga">{{ $s['price_category'] ? (\App\Models\PriceItem::CATEGORIES[$s['price_category']] ?? $s['price_category']) : '—' }}</td>
+          <td data-l="Kategori harga">{{ $s['price_category'] ? (\App\Models\PriceItem::categories()[$s['price_category']] ?? $s['price_category']) : '—' }}</td>
           <td>
             <div class="row-acts">
               <form method="post" action="{{ route('admin.services.move', $slug) }}">@csrf<input type="hidden" name="dir" value="up"><button class="btn btn-sm" type="submit" aria-label="Naikkan" @disabled($loop->first)>↑</button></form>

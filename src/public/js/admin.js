@@ -120,7 +120,7 @@
   /* ---------- Bilah simpan & peringatan perubahan ---------- */
   const savebar = $('#savebar');
   let dirtyForm = null, leaving = false;
-  const tracked = $$('#content form[method=post]').filter(f => !f.dataset.confirm && !f.classList.contains('filters') && $('button[type=submit]', f) && $$('input:not([type=hidden]), textarea, select', f).length > 1);
+  const tracked = $$('#content form[method=post]').filter(f => !f.dataset.confirm && f.dataset.noTrack === undefined && !f.classList.contains('filters') && $('button[type=submit]', f) && $$('input:not([type=hidden]), textarea, select', f).length > 1);
   // berkas dihitung lewat nama dan ukurannya agar memilih logo baru dianggap perubahan
   const snapshot = f => [...new FormData(f)].map(([k, v]) => k + '=' + (v instanceof File ? v.name + ':' + v.size : v)).join('&');
   tracked.forEach(f => {
@@ -376,4 +376,45 @@
   const evList = $('#events'), clList = $('#clients');
   if (evList) repeater(evList, $('#ev-tpl'), $('#add-ev'));
   if (clList) repeater(clList, $('#cl-tpl'), $('#add-client'));
+  const segList = $('#segments');
+  if (segList) repeater(segList, $('#seg-tpl'), $('#add-segment'));
+
+  /* ---------- Pratinjau gambar yang baru dipilih (foto harga, sampul artikel) ---------- */
+  document.addEventListener('change', e => {
+    const input = e.target;
+    if (!input.matches?.('input[type=file][data-preview]')) return;
+    const target = $(input.dataset.preview), file = input.files[0];
+    if (target && file) target.innerHTML = '<img alt="Pratinjau" src="' + URL.createObjectURL(file) + '">';
+  });
+
+  /* ---------- Sisipkan gambar ke isi artikel ---------- */
+  const insertBtn = $('#insert-image'), imageFile = $('#image-file'), bodyArea = $('#f-body');
+  if (insertBtn && imageFile && bodyArea) {
+    const form = bodyArea.closest('form');
+    insertBtn.addEventListener('click', () => imageFile.click());
+    imageFile.addEventListener('change', async () => {
+      const file = imageFile.files[0];
+      if (!file) return;
+      const alt = (prompt('Deskripsi gambar (untuk pembaca layar dan Google, boleh dikosongkan):') || '').replace(/"/g, '');
+      const data = new FormData();
+      data.append('image', file);
+      data.append('_token', $('input[name=_token]', form).value);
+      insertBtn.classList.add('is-loading');
+      try {
+        const res = await fetch(form.dataset.upload, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json.errors?.image?.[0] || json.message || 'Gambar gagal diunggah.');
+        const { selectionStart: s, selectionEnd: en } = bodyArea;
+        bodyArea.focus();
+        bodyArea.setRangeText('\n<img src="' + json.url + '" alt="' + alt + '" loading="lazy">\n', s, en, 'end');
+        bodyArea.dispatchEvent(new Event('input', { bubbles: true }));
+        window.toast?.('Gambar disisipkan di isi artikel.');
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        insertBtn.classList.remove('is-loading');
+        imageFile.value = '';
+      }
+    });
+  }
 })();

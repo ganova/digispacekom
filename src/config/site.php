@@ -11,8 +11,18 @@
 
 return [
 
-    // folder logo klien dari CMS; null = public/uploads/clients (hanya diubah oleh tes)
-    'upload_dir' => null,
+    // akar folder gambar unggahan CMS; null = public/uploads (hanya diubah oleh tes)
+    'upload_root' => null,
+
+    // kategori di halaman Cek Harga; dapat ditambah lewat CMS
+    'price_categories' => [
+        'laptop' => 'Laptop',
+        'pc' => 'PC',
+        'macbook' => 'MacBook',
+        'printer' => 'Printer',
+        'jaringan' => 'Jaringan',
+        'sparepart' => 'Sparepart',
+    ],
 
     'name' => 'PT Digital Space Komputer',
     'short' => 'Digital Space Komputer',

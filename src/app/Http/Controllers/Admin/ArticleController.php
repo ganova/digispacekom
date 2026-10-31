@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Article;
+use App\Support\Images;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -28,7 +29,13 @@ class ArticleController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        Article::create($this->validated($request));
+        $data = $this->validated($request);
+
+        if ($failed = $this->saveCover($request, $data)) {
+            return $failed;
+        }
+
+        Article::create($data);
 
         return redirect()->route('admin.articles.index')->with('ok', 'Artikel disimpan.');
     }
@@ -40,13 +47,25 @@ class ArticleController extends Controller
 
     public function update(Request $request, Article $article): RedirectResponse
     {
-        $article->update($this->validated($request, $article));
+        $data = $this->validated($request, $article);
+        $old = $article->cover;
+
+        if ($failed = $this->saveCover($request, $data, $old)) {
+            return $failed;
+        }
+
+        $article->update($data);
+
+        if ($old && $old !== $article->cover) {
+            Images::delete('articles', $old);
+        }
 
         return redirect()->route('admin.articles.index')->with('ok', 'Artikel diperbarui.');
     }
 
     public function destroy(Article $article): RedirectResponse
     {
+        Images::delete('articles', $article->cover);
         $article->delete();
 
         return redirect()->route('admin.articles.index')->with('ok', 'Artikel dihapus.');
@@ -60,10 +79,14 @@ class ArticleController extends Controller
             'category' => ['nullable', 'string', 'max:60'],
             'excerpt' => ['required', 'string', 'max:300'],
             'body' => ['required', 'string', 'max:200000'],
+            'cover_file' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:6144'],
             'publish' => ['required', 'in:draft,now,scheduled'],
             'published_at' => ['nullable', 'date', 'required_if:publish,scheduled'],
-        ], [], [
-            'title' => 'judul', 'slug' => 'alamat (slug)', 'category' => 'kategori', 'excerpt' => 'ringkasan',
+        ], [
+            'cover_file.mimes' => 'Gambar sampul harus berformat JPG, PNG, atau WebP.',
+            'cover_file.max' => 'Ukuran gambar sampul maksimal 6 MB.',
+        ], [
+            'cover_file' => 'gambar sampul', 'title' => 'judul', 'slug' => 'alamat (slug)', 'category' => 'kategori', 'excerpt' => 'ringkasan',
             'body' => 'isi artikel', 'published_at' => 'waktu terbit',
         ]);
 
@@ -79,6 +102,25 @@ class ArticleController extends Controller
         unset($data['publish']);
 
         return $data;
+    }
+
+    /** Sampul baru menggantikan yang lama; kotak "hapus sampul" mengosongkannya. */
+    private function saveCover(Request $request, array &$data, ?string $current = null): ?RedirectResponse
+    {
+        unset($data['cover_file']);
+        $data['cover'] = $request->boolean('cover_remove') ? null : $current;
+
+        if ($file = $request->file('cover_file')) {
+            try {
+                $data['cover'] = Images::store($file, 'articles', 1400);
+            } catch (\Throwable $e) {
+                report($e);
+
+                return back()->withInput()->withErrors(['cover_file' => 'Gambar tidak bisa disimpan: folder unggahan tidak dapat ditulis. Hubungi admin server.']);
+            }
+        }
+
+        return null;
     }
 
     private function uniqueSlug(string $source, ?Article $article): string

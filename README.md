@@ -19,7 +19,7 @@ Form booking dan form penawaran menyimpan data ke tabel `bookings`, lalu mengara
 
 Semua konten (profil, layanan, harga, artikel, tiket servis, landing page, permintaan masuk) dikelola di
 `/admin`. Buat akun pertama dengan `docker compose exec app php artisan admin:create`.
-Ada dua peran: **admin penuh** dan **staf** (hanya artikel, tiket servis, dan daftar harga). Klien yang dipercaya bisa diberi logo.
+Ada dua peran: **admin penuh** dan **staf** (hanya artikel, tiket servis, dan daftar harga). Klien yang dipercaya bisa diberi logo, artikel dan item harga/suku cadang bisa diberi gambar, dan tab beranda serta kategori harga bisa ditambah sendiri.
 Situs publik punya mode gelap otomatis (malam hari) dengan tombol tema di header.
 Panduan pemakaian: **[docs/CMS-ADMIN.md](docs/CMS-ADMIN.md)**.
 

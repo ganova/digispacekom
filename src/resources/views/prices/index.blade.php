@@ -5,7 +5,7 @@
 @section('wa_label', 'Tanya harga lewat WA')
 
 @php
-    $categories = \App\Models\PriceItem::CATEGORIES;
+    $categories = \App\Models\PriceItem::categories();
     $tagUrl = fn ($key) => route('prices.index', array_filter(['q' => $q, 'kategori' => $key]));
 @endphp
 

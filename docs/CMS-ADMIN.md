@@ -18,7 +18,7 @@ Akun tambahan dibuat di menu **Pengguna & peran**. Ganti password sendiri di **A
 | Peran | Bisa melakukan |
 |---|---|
 | **Admin penuh** | Semua menu di bawah, termasuk permintaan masuk, isi situs, dan mengelola pengguna. |
-| **Staf** | Hanya **Tiket servis**, **Daftar harga** (termasuk harga suku cadang), dan **Artikel**, ditambah **Akun saya**. Menu lain tidak tampil, dan bila alamatnya dibuka langsung, akses ditolak. |
+| **Staf** | Hanya **Tiket servis**, **Daftar harga** (termasuk suku cadang dan kategorinya), dan **Artikel**, ditambah **Akun saya**. Menu lain tidak tampil, dan bila alamatnya dibuka langsung, akses ditolak. |
 
 Akun yang dibuat lewat perintah `admin:create` selalu admin penuh. Staf dibuat di **Pengguna & peran → Tambah
 pengguna**, dengan memilih peran *Staf*. Peran dan password pengguna bisa diubah lewat tombol **Ubah**. Minimal harus
@@ -31,10 +31,10 @@ ada satu admin penuh, dan akun yang sedang dipakai tidak bisa dihapus atau ditur
 | **Dasbor** | Ringkasan: permintaan baru, jumlah tiket, harga, artikel. Staf melihat versi ringkas tanpa data permintaan. |
 | **Permintaan masuk** | Semua isian form booking dan minta penawaran. Ubah status (Baru, Sudah dihubungi, Selesai, Batal), tulis catatan internal, cari, dan unduh CSV untuk Excel. Pengunjung juga sudah diarahkan ke WhatsApp, jadi data kontaknya ada di chat. |
 | **Tiket servis** | Buat tiket untuk perangkat yang diterima, lalu perbarui tahapannya. Pelanggan melihatnya di `/cek-status` dengan nomor tiket (nama tampil tersamar). |
-| **Daftar harga** | Item estimasi di halaman `/cek-harga`. Ada pratinjau tampilan harga saat mengetik. |
-| **Artikel** | Tulis, jadwalkan, atau simpan sebagai draf. Editor punya tombol format dan pratinjau. |
-| **Layanan** | Enam halaman layanan (tambah, ubah, hapus, urutkan). |
-| **Tab beranda** | Nama tab Kantor / Rumah / Sekolah dan layanan yang tampil di tiap tab. |
+| **Daftar harga** | Item estimasi di halaman `/cek-harga`, dengan **foto** dan lencana **Ready stok / Stok habis** (untuk suku cadang). Ada pratinjau tampilan harga saat mengetik. Tombol **Kelola kategori** menambah kategori baru seperti *Sparepart Ready*, *CCTV*, atau *Game Station*. |
+| **Artikel** | Tulis, jadwalkan, atau simpan sebagai draf. Bisa memakai **gambar sampul** dan **menyisipkan gambar** ke isi artikel lewat tombol *Gambar* di editor. Editor punya tombol format dan pratinjau. |
+| **Layanan** | Halaman layanan (tambah, ubah, hapus, urutkan). Pilih ikon (termasuk kamera/CCTV, game, WiFi). Daftar masalah boleh dikosongkan. |
+| **Tab beranda** | Tab di beranda bisa **ditambah, dihapus, diberi nama, dan diurutkan** (maks. 8), mis. *CCTV* atau *Game Station*. Tiap tab memilih layanannya sendiri. |
 | **Landing page iklan** | Judul, poin, formulir, dan teks mesin pencari untuk dua halaman iklan. |
 | **Profil & kontak** | Nama perusahaan, telepon, WhatsApp, email, alamat, jam buka. |
 | **Klien & logo** | Nama klien yang dipercaya, dengan **logo opsional** (PNG/JPG/WebP, maks. 2 MB). Bisa diurutkan dengan menyeret nomornya. Tampil di beranda, landing page iklan, dan halaman Tentang. |
@@ -86,6 +86,10 @@ situs ikut berubah.
 Halaman Profil, Layanan, Tab beranda, Landing, dan Klien/wilayah/langkah punya tautan
 **Kembalikan ke isi awal** (muncul bila ada perubahan). Isi awal berasal dari `src/config/site.php`.
 
+**Menambah tab beranda baru (mis. CCTV, Game Station):** buat dulu layanannya di *Layanan → Tambah layanan*, lalu buka *Tab beranda → Tambah tab*, beri nama, centang layanannya, dan simpan.
+
+**Menambah kategori sparepart ready:** *Daftar harga → Kelola kategori → Tambah* (mis. “Sparepart Ready”). Lalu tambahkan item dengan kategori itu, isi **Status stok = Ready stok**, dan unggah fotonya.
+
 **Menambah klien lain:** Klien & logo → *Tambah klien* → isi nama (dan unggah logo bila ada) → *Simpan*. Logo tampil
 sebagai kotak putih agar terbaca di latar gelap maupun terang; logo berlatar transparan paling rapi.
 
@@ -93,7 +97,7 @@ sebagai kotak putih agar terbaca di latar gelap maupun terang; logo berlatar tra
 
 - Logo dan warna (perlu developer).
 - Menambah landing page iklan baru atau mengubah alamatnya (isi tiap landing bisa diubah).
-- Mengunggah foto atau gambar lain. Yang bisa diunggah baru logo klien.
+- Mengunggah gambar selain logo klien, sampul dan isi artikel, serta foto item harga.
 
 ## Catatan teknis
 
@@ -103,6 +107,7 @@ sebagai kotak putih agar terbaca di latar gelap maupun terang; logo berlatar tra
   orang yang dipercaya.
 - Halaman admin diberi `noindex` dan `Cache-Control: no-store`. Percobaan login dibatasi 6 per menit.
 - Backup database (`./prod.sh backup`) mencakup semua konten CMS, dan juga menyimpan logo klien dari
-  `src/public/uploads` ke `backups/uploads-*.tgz`.
-- Logo disimpan di `src/public/uploads/clients` dengan nama acak. Hanya PNG/JPG/WebP yang diterima (SVG ditolak karena
-  bisa memuat skrip).
+  `src/public/uploads` (logo, sampul, foto) ke `backups/uploads-*.tgz`.
+- Gambar disimpan di `src/public/uploads/` (`clients`, `articles`, `prices`) dengan nama acak. Hanya PNG/JPG/WebP yang
+  diterima (SVG ditolak karena bisa memuat skrip). Foto besar otomatis dikecilkan (maks. 1400 px untuk artikel, 900 px
+  untuk item harga) dan diubah ke WebP agar halaman cepat dibuka di HP. Ukuran unggahan maksimal 6 MB (logo 2 MB).

@@ -92,3 +92,8 @@ html[data-theme-mode="dark"] .th-tg .i-moon{opacity:1;transform:none}
 :root[data-theme="dark"] .ok,
 :root[data-theme="dark"] .a-badge,
 :root[data-theme="dark"] .c-svc .ic{color:var(--lime-300)}
+
+/* Foto, stok, dan sampul artikel */
+:root[data-theme="dark"] .c-stock.ready{background:rgba(154,217,75,.14);color:var(--lime-300)}
+:root[data-theme="dark"] .c-stock.habis{background:rgba(255,107,91,.14);color:#FFB3A8}
+:root[data-theme="dark"] .c-row.has-img .c-thumb{background:#131E40}

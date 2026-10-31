@@ -43,8 +43,8 @@ else
     php artisan view:clear >/dev/null
 fi
 
-# logo klien yang diunggah dari CMS disimpan di public/uploads (ikut volume ./src)
-mkdir -p public/uploads/clients
+# logo klien dan gambar artikel/suku cadang yang diunggah dari CMS disimpan di public/uploads (ikut volume ./src)
+mkdir -p public/uploads/clients public/uploads/articles/content public/uploads/prices
 chown -R www-data:www-data storage bootstrap/cache public/uploads
 
 exec "$@"

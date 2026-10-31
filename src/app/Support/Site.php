@@ -29,7 +29,7 @@ class Site
             return [
                 'name' => $client['name'],
                 'logo' => $logo,
-                'logo_url' => $logo ? asset('uploads/clients/'.$logo) : null,
+                'logo_url' => Images::url('clients', $logo),
             ];
         })->all();
     }

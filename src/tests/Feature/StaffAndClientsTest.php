@@ -25,7 +25,7 @@ class StaffAndClientsTest extends TestCase
 
         // jangan menyentuh logo asli di public/uploads saat tes dijalankan
         $this->uploads = storage_path('framework/testing/clients-'.uniqid());
-        config(['site.upload_dir' => $this->uploads]);
+        config(['site.upload_root' => $this->uploads]);
     }
 
     protected function tearDown(): void
@@ -138,7 +138,7 @@ class StaffAndClientsTest extends TestCase
         $this->assertCount(2, $clients);
         $this->assertNotNull($clients[0]['logo']);
         $this->assertNull($clients[1]['logo']);
-        $this->assertFileExists($this->uploads.'/'.($clients[0]['logo']));
+        $this->assertFileExists($this->uploads.'/clients/'.($clients[0]['logo']));
 
         $this->get('/')->assertOk()
             ->assertSee('uploads/clients/'.$clients[0]['logo'], false)
@@ -157,7 +157,7 @@ class StaffAndClientsTest extends TestCase
         $this->put('/admin/klien', ['clients' => [['name' => 'PT Maju Jaya Abadi', 'logo_current' => $logo, 'logo_remove' => '1']]])
             ->assertSessionHasNoErrors();
         $this->assertNull(\App\Support\Site::clients()[0]['logo']);
-        $this->assertFileDoesNotExist($this->uploads.'/'.($logo));
+        $this->assertFileDoesNotExist($this->uploads.'/clients/'.($logo));
     }
 
     public function test_client_logo_rejects_dangerous_files_and_foreign_filenames(): void

@@ -393,6 +393,10 @@ git pull
 
 Migrasi database dan cache dijalankan otomatis saat container menyala.
 
+> Pembaruan yang menambah ekstensi PHP (mis. **GD** untuk memperkecil foto unggahan) memerlukan `--build`. Selalu gunakan
+> `./prod.sh up -d --build` saat memperbarui, dan jangan hanya `up -d`. Build pertama setelah pembaruan semacam itu bisa
+> memakan **5–10 menit**.
+
 > **Jangan** menjalankan `./prod.sh down -v`: opsi `-v` **menghapus database**.
 
 ---

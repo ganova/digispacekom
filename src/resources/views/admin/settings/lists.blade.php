@@ -13,7 +13,7 @@
   <p class="sub">Satu baris satu butir. Baris kosong diabaikan.</p>
 
   <div class="grid">
-    <x-admin.field name="service_areas" label="Wilayah layanan" :rows="7" :value="implode("\n", config('site.service_areas'))" />
+    <x-admin.field name="service_areas" label="Wilayah layanan" :rows="7" :value="implode(PHP_EOL, config('site.service_areas'))" />
     <x-admin.field name="steps" label="Langkah layanan" :rows="5" :value="$steps" required hint="Format: Judul | penjelasan singkat. Contoh: Booking | Isi form atau chat WhatsApp." />
   </div>
 

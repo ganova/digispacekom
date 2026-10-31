@@ -4,6 +4,7 @@
 @section('heading', 'Daftar harga')
 
 @section('actions')
+  <a class="btn" href="{{ route('admin.price-categories') }}">Kelola kategori</a>
   <a class="btn btn-primary" href="{{ route('admin.prices.create') }}">@include('admin.partials.icon', ['name' => 'plus', 'size' => 16]) Tambah item</a>
 @endsection
 
@@ -14,7 +15,7 @@
     <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari item harga…">
     <select name="category" onchange="this.form.submit()">
       <option value="">Semua kategori</option>
-      @foreach (\App\Models\PriceItem::CATEGORIES as $key => $label)
+      @foreach (\App\Models\PriceItem::categories() as $key => $label)
         <option value="{{ $key }}" @selected(request('category') === $key)>{{ $label }}</option>
       @endforeach
     </select>
@@ -30,8 +31,13 @@
         <tbody>
         @foreach ($items as $item)
           <tr>
-            <td data-l="Kategori"><span class="badge">{{ \App\Models\PriceItem::CATEGORIES[$item->category] ?? $item->category }}</span></td>
-            <td data-l="Layanan"><a class="t" href="{{ route('admin.prices.edit', $item) }}">{{ $item->name }}</a>@if ($item->note)<span class="sub">{{ $item->note }}</span>@endif</td>
+            <td data-l="Kategori"><span class="badge">{{ \App\Models\PriceItem::categories()[$item->category] ?? $item->category }}</span></td>
+            <td data-l="Layanan">
+              <div class="item-cell">
+                @if ($item->image)<img class="thumb" src="{{ \App\Support\Images::url('prices', $item->image) }}" alt="" loading="lazy">@endif
+                <div><a class="t" href="{{ route('admin.prices.edit', $item) }}">{{ $item->name }}</a>@if ($item->stock)<span class="badge {{ $item->stock === 'ready' ? 'selesai' : 'batal' }} plain" style="margin-left:8px">{{ \App\Models\PriceItem::STOCK[$item->stock] }}</span>@endif @if ($item->note)<span class="sub">{{ $item->note }}</span>@endif</div>
+              </div>
+            </td>
             <td data-l="Harga tampil" class="num mono">{{ $item->priceLabel() }}</td>
             <td>
               <div class="row-acts">

@@ -65,7 +65,8 @@ class AdminTest extends TestCase
         ];
 
         foreach ($urls as $url) {
-            $this->get($url)->assertOk();
+            // tag komponen yang keluar mentah berarti atribut Blade-nya rusak (mis. tanda kutip bersarang)
+            $this->get($url)->assertOk()->assertDontSee('<x-admin', false);
         }
 
         $this->get('/admin/layanan/tidak-ada')->assertNotFound();

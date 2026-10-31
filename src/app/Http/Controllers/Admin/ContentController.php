@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 /** Konten situs yang bukan data tabel: profil, daftar, segmen beranda, dan landing page iklan. */
@@ -96,21 +97,37 @@ class ContentController extends Controller
         ]);
     }
 
+    /** Tab beranda dapat ditambah, dihapus, diberi nama, dan diurutkan; tiap tab memilih layanannya. */
     public function updateSegments(Request $request): RedirectResponse
     {
         $slugs = array_keys(config('site.services'));
-        $segments = [];
+        $rows = array_values((array) $request->input('segments', []));
 
-        foreach (config('site.segments') as $key => $segment) {
-            $input = $request->input("segments.{$key}", []);
-            $label = trim((string) ($input['label'] ?? ''));
-            $chosen = array_values(array_intersect($slugs, (array) ($input['services'] ?? [])));
+        if (count($rows) < 1 || count($rows) > 8) {
+            return back()->withInput()->withErrors(['segments' => 'Beranda butuh 1 sampai 8 tab.']);
+        }
+
+        $segments = [];
+        $known = config('site.segments');
+
+        foreach ($rows as $row) {
+            $label = mb_substr(trim((string) ($row['label'] ?? '')), 0, 40);
+            $chosen = array_values(array_intersect($slugs, (array) ($row['services'] ?? [])));
 
             if ($label === '' || $chosen === []) {
-                return back()->withInput()->withErrors(["segments.{$key}" => "Tab \"{$segment['label']}\" butuh nama dan minimal satu layanan."]);
+                return back()->withInput()->withErrors(['segments' => 'Setiap tab butuh nama dan minimal satu layanan.']);
             }
 
-            $segments[$key] = ['label' => mb_substr($label, 0, 40), 'services' => $chosen];
+            // kunci tab dipertahankan bila sudah ada; tab baru memakai nama sebagai kunci
+            $key = isset($row['key'], $known[$row['key']]) ? $row['key'] : (Str::slug($label) ?: 'tab');
+            $base = $key;
+            $i = 2;
+
+            while (isset($segments[$key])) {
+                $key = $base.'-'.$i++;
+            }
+
+            $segments[$key] = ['label' => $label, 'services' => $chosen];
         }
 
         Setting::put('segments', $segments);

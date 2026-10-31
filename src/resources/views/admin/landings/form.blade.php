@@ -19,7 +19,7 @@
       <x-admin.field name="headline" label="Judul utama" :value="$page['headline']" required />
       <x-admin.field name="highlight" label="Kalimat sorotan" :value="$page['highlight']" required hint="Tampil berwarna di bawah judul." />
       <x-admin.field name="lead" label="Kalimat pembuka" :rows="3" :value="$page['lead']" required class="span2 field" />
-      <x-admin.field name="checks" label="Poin keunggulan" :rows="4" :value="implode("\n", $page['checks'])" required class="span2 field" hint="Satu baris satu poin (disarankan 3)." />
+      <x-admin.field name="checks" label="Poin keunggulan" :rows="4" :value="implode(PHP_EOL, $page['checks'])" required class="span2 field" hint="Satu baris satu poin (disarankan 3)." />
     </div>
   </section>
 
@@ -29,7 +29,7 @@
     <div class="grid g2">
       <x-admin.field name="form_title" label="Judul formulir" :value="$page['form_title']" required />
       <x-admin.field name="placeholder" label="Contoh isian keluhan" :value="$page['placeholder']" required />
-      <x-admin.field name="devices" label="Pilihan perangkat" :rows="5" :value="implode("\n", $page['devices'])" required class="span2 field" hint="Satu baris satu pilihan." />
+      <x-admin.field name="devices" label="Pilihan perangkat" :rows="5" :value="implode(PHP_EOL, $page['devices'])" required class="span2 field" hint="Satu baris satu pilihan." />
     </div>
   </section>
 

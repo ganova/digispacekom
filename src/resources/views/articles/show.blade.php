@@ -4,6 +4,7 @@
 @section('description', $article->excerpt)
 
 @push('meta')
+@if ($article->cover)<meta property="og:image" content="{{ \App\Support\Images::url('articles', $article->cover) }}">@endif
 <meta property="article:published_time" content="{{ $article->published_at->toIso8601String() }}">
 @endpush
 
@@ -17,6 +18,9 @@
 
 <section class="sec">
   <div class="wrap">
+    @if ($article->cover)
+      <figure class="art-hero rv"><img src="{{ \App\Support\Images::url('articles', $article->cover) }}" alt="{{ $article->title }}" decoding="async"></figure>
+    @endif
     {{-- Isi artikel ditulis admin (konten tepercaya) --}}
     <article class="prose prose-article rv">{!! $article->body !!}</article>
   </div>

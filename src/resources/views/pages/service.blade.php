@@ -3,7 +3,7 @@
 @section('title', $service['title'])
 @section('description', $service['title'].' se-'.config('site.area').': '.$service['short'].' Teknisi datang ke lokasi, biaya disepakati dulu.')
 
-@php($device = ['laptop' => 'Laptop', 'pc' => 'PC', 'macbook' => 'MacBook', 'printer' => 'Printer', 'jaringan' => 'Jaringan'][$service['price_category']] ?? null)
+@php($device = \App\Models\PriceItem::categories()[$service['price_category']] ?? null)
 
 @section('content')
 @include('partials.page-hero', [
@@ -16,12 +16,14 @@
 <section class="sec">
   <div class="wrap detail">
     <div>
+      @if (! empty($service['problems']))
       <div class="sec-hd rv"><span class="eyebrow">Yang biasa kami tangani</span><h2>Masalah umum, solusi cepat.</h2></div>
       <ul class="checks">
         @foreach ($service['problems'] as $problem)<li class="rv" style="--d:{{ $loop->index }}"><span class="ok" aria-hidden="true">✓</span>{{ $problem }}</li>@endforeach
       </ul>
+      @endif
 
-      <div class="sec-hd rv" style="margin-top:64px"><span class="eyebrow">Cara kerja</span><h2>Tiga langkah, tanpa ribet.</h2></div>
+      <div class="sec-hd rv" @if (! empty($service['problems'])) style="margin-top:64px" @endif><span class="eyebrow">Cara kerja</span><h2>Tiga langkah, tanpa ribet.</h2></div>
       <ol class="flow flow-col rv">
         @foreach (config('site.steps') as [$t, $d])<li style="--d:{{ $loop->index }}"><span class="flow-n mono">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><b>{{ $t }}</b><p>{{ $d }}</p></li>@endforeach
       </ol>

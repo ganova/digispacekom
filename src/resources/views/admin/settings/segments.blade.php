@@ -3,29 +3,62 @@
 @section('title', 'Tab beranda')
 @section('heading', 'Tab beranda')
 
-@section('content')
-<form method="post" action="{{ route('admin.segments.update') }}">
-  @csrf @method('put')
-  <p class="note" style="margin-bottom:16px">Beranda punya tiga tab pilihan pengunjung. Tentukan nama tab dan layanan apa saja yang tampil di dalamnya.</p>
+@php
+    // setelah gagal validasi, tampilkan isian terakhir pengguna
+    $rows = old('segments')
+        ? collect(old('segments'))->map(fn ($r) => ['key' => $r['key'] ?? null, 'label' => $r['label'] ?? '', 'services' => $r['services'] ?? []])->values()->all()
+        : collect($segments)->map(fn ($s, $k) => ['key' => $k, 'label' => $s['label'], 'services' => $s['services']])->values()->all();
+@endphp
 
-  @foreach ($segments as $key => $segment)
-    <section class="card">
-      <h2>Tab “{{ $segment['label'] }}”</h2>
-      <p class="sub">&nbsp;</p>
-      <div class="field" style="max-width:340px;margin-bottom:16px">
-        <label for="seg-{{ $key }}">Nama tab</label>
-        <input id="seg-{{ $key }}" name="segments[{{ $key }}][label]" value="{{ old("segments.{$key}.label", $segment['label']) }}" maxlength="40" required>
+@section('content')
+<p class="note" style="margin-bottom:16px"><span>Tab di beranda memilih layanan yang tampil untuk tiap jenis pelanggan (mis. Kantor, Rumah, <strong>CCTV</strong>, <strong>Game Station</strong>). Tambah tab, beri nama, lalu centang layanannya. Layanan baru dibuat di menu <a href="{{ route('admin.services.index') }}">Layanan</a>.</span></p>
+
+<form method="post" action="{{ route('admin.segments.update') }}" class="card">
+  @csrf @method('put')
+  <div class="card-head"><div><h2>Tab di beranda</h2><p class="sub">Urutan di sini adalah urutan tab. Tab pertama terbuka lebih dulu. Maksimal 8 tab.</p></div></div>
+
+  <div class="events" id="segments">
+    @foreach ($rows as $i => $row)
+      <div class="ev seg-row" data-state="next">
+        <span class="n">{{ $i + 1 }}</span>
+        <div class="seg-body">
+          <input type="hidden" name="segments[{{ $i }}][key]" value="{{ $row['key'] }}">
+          <input class="seg-name" name="segments[{{ $i }}][label]" value="{{ $row['label'] }}" placeholder="Nama tab, mis. CCTV" maxlength="40" aria-label="Nama tab" required>
+          <div class="sel-list">
+            @foreach ($services as $slug => $service)
+              <label><input type="checkbox" name="segments[{{ $i }}][services][]" value="{{ $slug }}" @checked(in_array($slug, $row['services'], true))>{{ $service['title'] }}</label>
+            @endforeach
+          </div>
+        </div>
+        <div class="mv">
+          <button type="button" data-up title="Naikkan" aria-label="Naikkan">↑</button>
+          <button type="button" data-down title="Turunkan" aria-label="Turunkan">↓</button>
+          <button type="button" data-del title="Hapus tab" aria-label="Hapus tab">✕</button>
+        </div>
       </div>
-      <div class="sel-list">
-        @foreach ($services as $slug => $service)
-          <label>
-            <input type="checkbox" name="segments[{{ $key }}][services][]" value="{{ $slug }}" @checked(in_array($slug, old("segments.{$key}.services", $segment['services']), true))>
-            {{ $service['title'] }}
-          </label>
-        @endforeach
+    @endforeach
+  </div>
+  <button type="button" class="add-ev" id="add-segment">+ Tambah tab</button>
+
+  <template id="seg-tpl">
+    <div class="ev seg-row" data-state="next">
+      <span class="n"></span>
+      <div class="seg-body">
+        <input type="hidden" name="segments[__][key]" value="">
+        <input class="seg-name" name="segments[__][label]" placeholder="Nama tab, mis. CCTV" maxlength="40" aria-label="Nama tab" required>
+        <div class="sel-list">
+          @foreach ($services as $slug => $service)
+            <label><input type="checkbox" name="segments[__][services][]" value="{{ $slug }}">{{ $service['title'] }}</label>
+          @endforeach
+        </div>
       </div>
-    </section>
-  @endforeach
+      <div class="mv">
+        <button type="button" data-up title="Naikkan" aria-label="Naikkan">↑</button>
+        <button type="button" data-down title="Turunkan" aria-label="Turunkan">↓</button>
+        <button type="button" data-del title="Hapus tab" aria-label="Hapus tab">✕</button>
+      </div>
+    </div>
+  </template>
 
   <div class="actions"><button class="btn btn-primary" type="submit">Simpan</button></div>
 </form>

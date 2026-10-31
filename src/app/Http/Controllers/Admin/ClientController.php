@@ -4,22 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\Images;
 use App\Support\Site;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 /** Klien yang dipercaya: nama dan logo (opsional) yang tampil di beranda, landing, dan halaman Tentang. */
 class ClientController extends Controller
 {
-    /** Folder logo di dalam public/. Dapat dialihkan lewat config('site.upload_dir') (dipakai oleh tes). */
-    public static function dir(): string
-    {
-        return config('site.upload_dir') ?: public_path('uploads/clients');
-    }
-
     public function index(): View
     {
         return view('admin.clients.index', [
@@ -33,7 +26,7 @@ class ClientController extends Controller
         $request->validate([
             'clients' => ['nullable', 'array', 'max:60'],
             'clients.*.name' => ['nullable', 'string', 'max:80'],
-            'clients.*.logo_current' => ['nullable', 'string', 'regex:/^[A-Za-z0-9_-]+\.(png|jpe?g|webp)$/'],
+            'clients.*.logo_current' => ['nullable', 'string', 'regex:'.Images::NAME],
             'clients.*.logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
         ], [
             'clients.*.logo.mimes' => 'Logo harus berformat PNG, JPG, atau WebP.',
@@ -59,11 +52,8 @@ class ClientController extends Controller
             }
 
             if ($file = $request->file("clients.{$i}.logo")) {
-                $logo = Str::random(20).'.'.$file->extension();
-
                 try {
-                    File::ensureDirectoryExists(self::dir());
-                    $file->move(self::dir(), $logo);
+                    $logo = Images::store($file, 'clients', 600);
                 } catch (\Throwable $e) {
                     report($e);
 
@@ -77,7 +67,7 @@ class ClientController extends Controller
         }
 
         Setting::put('clients', $clients);
-        $this->prune();
+        self::prune();
 
         return back()->with('ok', 'Daftar klien disimpan.');
     }
@@ -85,19 +75,7 @@ class ClientController extends Controller
     /** Hapus berkas logo yang tidak lagi dipakai daftar klien. */
     public static function prune(): void
     {
-        $dir = self::dir();
-
-        if (! File::isDirectory($dir)) {
-            return;
-        }
-
-        $used = collect(Site::clients())->pluck('logo')->filter()->all();
-
-        foreach (File::files($dir) as $file) {
-            if (! in_array($file->getFilename(), $used, true)) {
-                File::delete($file->getPathname());
-            }
-        }
+        Images::prune('clients', collect(Site::clients())->pluck('logo')->filter()->all());
     }
 
     /** Bentuk ulang isian formulir yang gagal divalidasi agar nama dan logo lama tidak hilang. */
@@ -109,7 +87,7 @@ class ClientController extends Controller
             return [
                 'name' => (string) ($row['name'] ?? ''),
                 'logo' => $logo,
-                'logo_url' => $logo ? asset('uploads/clients/'.$logo) : null,
+                'logo_url' => Images::url('clients', $logo),
             ];
         })->values()->all();
     }
