@@ -29,7 +29,13 @@ class Setting extends Model
 
     public static function put(string $key, mixed $value): void
     {
-        static::updateOrCreate(['key' => $key], ['value' => $value]);
+        // kolom value tidak menerima NULL; nilai kosong cukup menghapus barisnya
+        if ($value === null) {
+            static::where('key', $key)->delete();
+        } else {
+            static::updateOrCreate(['key' => $key], ['value' => $value]);
+        }
+
         config(["site.{$key}" => $value]);
     }
 

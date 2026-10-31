@@ -315,3 +315,13 @@ body[data-hero=dark] .hd{margin-bottom:calc(var(--hd-h) * -1)}
 .art-hero{margin:0 auto 36px;max-width:68ch;font-size:17.5px}
 .art-hero img{display:block;width:100%;height:auto;max-height:460px;object-fit:cover;border-radius:var(--r-lg);box-shadow:var(--sh)}
 .prose img{display:block;max-width:100%;height:auto;margin:26px 0;border-radius:var(--r);box-shadow:var(--sh-sm)}
+
+
+/* ---------- Logo perusahaan dari CMS ---------- */
+.lg-img{display:block;height:40px;width:auto;max-width:190px;object-fit:contain}
+.lg-d{display:none}
+.lg-chip{align-items:center;padding:5px 12px;border-radius:12px;background:#fff;box-shadow:0 1px 0 rgba(10,19,48,.06)}
+.lg-chip .lg-img{height:30px}
+.lg.inv .lg-l,body[data-hero=dark] .hd:not(.scrolled) .lg-l,.menu-open .hd .lg-l,:root[data-theme="dark"] .hd .lg-l{display:none}
+.lg.inv .lg-d,body[data-hero=dark] .hd:not(.scrolled) .lg-d,.menu-open .hd .lg-d,:root[data-theme="dark"] .hd .lg-d{display:block}
+.lg.inv .lg-chip.lg-d,body[data-hero=dark] .hd:not(.scrolled) .lg-chip.lg-d,.menu-open .hd .lg-chip.lg-d,:root[data-theme="dark"] .hd .lg-chip.lg-d{display:inline-flex}

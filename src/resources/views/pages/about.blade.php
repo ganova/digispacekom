@@ -13,9 +13,17 @@
 <section class="sec">
   <div class="wrap detail">
     <div class="prose rv">
-      {{-- Teks contoh — ganti dengan profil resmi perusahaan --}}
-      <p class="prose-lead">Kami membantu organisasi menjaga perangkat IT tetap berjalan: dari laptop staf, printer, dan server, sampai jaringan gedung dan CCTV.</p>
-      <p>Untuk kantor yang tidak memiliki tim IT sendiri, kami menyediakan kontrak maintenance dengan kunjungan rutin dan laporan kondisi aset setiap bulan. Pelanggan rumahan juga kami layani lewat service panggilan: teknisi datang, mengecek di tempat, dan biaya disepakati sebelum dikerjakan.</p>
+      {{-- Isi dari CMS: Tentang, visi & misi --}}
+      <p class="prose-lead">{{ config('site.about_lead') }}</p>
+      @foreach (preg_split('/\R{2,}/', trim((string) config('site.about_body'))) as $para)
+        @if (trim($para) !== '')<p>{{ trim($para) }}</p>@endif
+      @endforeach
+      <h2>Visi</h2>
+      <p>{{ config('site.vision') }}</p>
+      <h2>Misi</h2>
+      <ul class="checks checks-1">
+        @foreach (config('site.mission') as $m)<li><span class="ok" aria-hidden="true">✓</span>{{ $m }}</li>@endforeach
+      </ul>
       <h2>Cara kami bekerja</h2>
       <ul class="checks checks-1">
         <li><span class="ok" aria-hidden="true">✓</span>Biaya dan lingkup pekerjaan disepakati sebelum dikerjakan</li>

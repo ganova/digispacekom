@@ -36,7 +36,8 @@ ada satu admin penuh, dan akun yang sedang dipakai tidak bisa dihapus atau ditur
 | **Layanan** | Halaman layanan (tambah, ubah, hapus, urutkan). Pilih ikon (termasuk kamera/CCTV, game, WiFi). Daftar masalah boleh dikosongkan. |
 | **Tab beranda** | Tab di beranda bisa **ditambah, dihapus, diberi nama, dan diurutkan** (maks. 8), mis. *CCTV* atau *Game Station*. Tiap tab memilih layanannya sendiri. |
 | **Landing page iklan** | Judul, poin, formulir, dan teks mesin pencari untuk dua halaman iklan. |
-| **Profil & kontak** | Nama perusahaan, telepon, WhatsApp, email, alamat, jam buka. |
+| **Profil & kontak** | Nama perusahaan, telepon, WhatsApp, email, alamat, jam buka, dan **logo perusahaan** (versi untuk latar terang, plus versi latar gelap yang opsional). |
+| **Tentang, visi & misi** | Teks Tentang, Visi, dan Misi. Tampil di halaman Tentang dan di kolom kiri halaman Kontak. |
 | **Klien & logo** | Nama klien yang dipercaya, dengan **logo opsional** (PNG/JPG/WebP, maks. 2 MB). Bisa diurutkan dengan menyeret nomornya. Tampil di beranda, landing page iklan, dan halaman Tentang. |
 | **Wilayah & langkah** | Wilayah layanan dan tiga langkah layanan. |
 | **Pengguna & peran** | Tambah, ubah, dan hapus akun admin atau staf. |
@@ -90,6 +91,10 @@ Halaman Profil, Layanan, Tab beranda, Landing, dan Klien/wilayah/langkah punya t
 
 **Menambah kategori sparepart ready:** *Daftar harga → Kelola kategori → Tambah* (mis. “Sparepart Ready”). Lalu tambahkan item dengan kategori itu, isi **Status stok = Ready stok**, dan unggah fotonya.
 
+**Memasang logo perusahaan:** Profil & kontak → *Unggah logo* (latar terang). Bila punya versi untuk latar gelap (mis. logo putih), unggah di kolom kedua; bila tidak, logo terang otomatis tampil di kotak putih pada latar gelap. Logo dipakai di header dan footer.
+
+**Mengisi visi dan misi:** Tentang, visi & misi → isi Tentang singkat, Visi, dan Misi (satu baris satu butir) → *Simpan*.
+
 **Menambah klien lain:** Klien & logo → *Tambah klien* → isi nama (dan unggah logo bila ada) → *Simpan*. Logo tampil
 sebagai kotak putih agar terbaca di latar gelap maupun terang; logo berlatar transparan paling rapi.
 
@@ -97,7 +102,7 @@ sebagai kotak putih agar terbaca di latar gelap maupun terang; logo berlatar tra
 
 - Logo dan warna (perlu developer).
 - Menambah landing page iklan baru atau mengubah alamatnya (isi tiap landing bisa diubah).
-- Mengunggah gambar selain logo klien, sampul dan isi artikel, serta foto item harga.
+- Mengunggah gambar selain logo perusahaan, logo klien, sampul dan isi artikel, serta foto item harga.
 
 ## Catatan teknis
 
@@ -108,6 +113,6 @@ sebagai kotak putih agar terbaca di latar gelap maupun terang; logo berlatar tra
 - Halaman admin diberi `noindex` dan `Cache-Control: no-store`. Percobaan login dibatasi 6 per menit.
 - Backup database (`./prod.sh backup`) mencakup semua konten CMS, dan juga menyimpan logo klien dari
   `src/public/uploads` (logo, sampul, foto) ke `backups/uploads-*.tgz`.
-- Gambar disimpan di `src/public/uploads/` (`clients`, `articles`, `prices`) dengan nama acak. Hanya PNG/JPG/WebP yang
+- Gambar disimpan di `src/public/uploads/` (`brand`, `clients`, `articles`, `prices`) dengan nama acak. Hanya PNG/JPG/WebP yang
   diterima (SVG ditolak karena bisa memuat skrip). Foto besar otomatis dikecilkan (maks. 1400 px untuk artikel, 900 px
   untuk item harga) dan diubah ke WebP agar halaman cepat dibuka di HP. Ukuran unggahan maksimal 6 MB (logo 2 MB).

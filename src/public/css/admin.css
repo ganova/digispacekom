@@ -521,3 +521,8 @@ dialog[open]::backdrop{animation:fade .25s}
 .ev.seg-row .sel-list label{padding:9px 12px;font-size:14px}
 @media (max-width:1080px){.ev.seg-row{grid-template-columns:36px 1fr}.ev.seg-row>*:nth-child(n+3){grid-column:2}}
 .ev .sel-list input[type=checkbox]{width:18px;min-height:0;height:18px;padding:0;border:0;background:none;accent-color:var(--lime)}
+
+.logo-box{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2)}
+.logo-box h3{font-size:16px}
+.img-prev.img-darkbg{background:#0A1533;border-color:#26335C}
+.img-prev.img-darkbg em{color:#8FA0CC}

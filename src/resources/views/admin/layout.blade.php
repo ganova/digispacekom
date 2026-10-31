@@ -39,6 +39,7 @@
             ['admin.landings.index', 'Landing page iklan', 'rocket', 'admin.landings.*', true],
             ['admin.clients', 'Klien & logo', 'badge', 'admin.clients*', true],
             ['admin.profile', 'Profil & kontak', 'building', 'admin.profile*', true],
+            ['admin.about', 'Tentang, visi & misi', 'sparkle', 'admin.about*', true],
             ['admin.lists', 'Wilayah & langkah', 'list', 'admin.lists*', true],
         ],
         'Akun' => [
@@ -200,7 +201,7 @@
     ])),
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
 <template id="icons">
-  @foreach (['home', 'inbox', 'ticket', 'tag', 'doc', 'wrench', 'tabs', 'rocket', 'building', 'list', 'user', 'users', 'external', 'plus', 'search', 'badge'] as $ic)
+  @foreach (['home', 'inbox', 'ticket', 'tag', 'doc', 'wrench', 'tabs', 'rocket', 'building', 'list', 'user', 'users', 'external', 'plus', 'search', 'badge', 'sparkle'] as $ic)
     <span data-ic="{{ $ic }}">@include('admin.partials.icon', ['name' => $ic, 'size' => 16])</span>
   @endforeach
 </template>

@@ -12,12 +12,25 @@
 
 <section class="sec">
   <div class="wrap contact">
+    <div class="contact-l">
     <ul class="info">
       <li class="spot rv" style="--d:0"><span class="ic-box">@include('partials.icon', ['name' => 'phone'])</span><span><small>WhatsApp &amp; telepon</small><a href="{{ \App\Support\Site::whatsappUrl() }}" target="_blank" rel="noopener">{{ config('site.phone') }}</a></span></li>
       <li class="spot rv" style="--d:1"><span class="ic-box">@include('partials.icon', ['name' => 'mail'])</span><span><small>Email</small><a href="mailto:{{ config('site.email') }}">{{ config('site.email') }}</a></span></li>
       <li class="spot rv" style="--d:2"><span class="ic-box">@include('partials.icon', ['name' => 'clock'])</span><span><small>Jam operasional</small>{{ config('site.hours') }}</span></li>
       <li class="spot rv" style="--d:3"><span class="ic-box">@include('partials.icon', ['name' => 'pin'])</span><span><small>Kantor</small>{{ config('site.address') }} · melayani {{ config('site.area') }}</span></li>
     </ul>
+
+    <section class="about-card spot rv" style="--d:4" aria-label="Tentang, visi, dan misi">
+      <span class="eyebrow">Visi &amp; misi</span>
+      <h3>Visi</h3>
+      <p>{{ config('site.vision') }}</p>
+      <h3>Misi</h3>
+      <ul class="checks checks-1">
+        @foreach (config('site.mission') as $m)<li><span class="ok" aria-hidden="true">✓</span>{{ $m }}</li>@endforeach
+      </ul>
+      <a class="link" href="{{ route('about') }}">Selengkapnya tentang kami →</a>
+    </section>
+    </div>
 
     <form class="qform rv" id="penawaran" method="post" action="{{ route('booking.store') }}">
       @csrf

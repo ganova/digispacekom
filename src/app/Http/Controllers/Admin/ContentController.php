@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\Images;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -14,7 +15,8 @@ class ContentController extends Controller
 {
     /** Bagian pengaturan => kunci config('site.*') yang dikelola. */
     public const SECTIONS = [
-        'profil' => ['name', 'short', 'tagline', 'phone', 'whatsapp', 'email', 'city', 'address', 'area', 'hours', 'maps_query'],
+        'profil' => ['name', 'short', 'tagline', 'phone', 'whatsapp', 'email', 'city', 'address', 'area', 'hours', 'maps_query', 'logo', 'logo_dark'],
+        'tentang' => ['about_lead', 'about_body', 'vision', 'mission'],
         'daftar' => ['service_areas', 'steps'],
         'klien' => ['clients'],
         'segmen' => ['segments'],
@@ -45,19 +47,91 @@ class ContentController extends Controller
             'area' => ['required', 'string', 'max:80'],
             'hours' => ['required', 'string', 'max:80'],
             'maps_query' => ['required', 'string', 'max:160'],
+            'logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
+            'logo_dark' => ['nullable', 'file', 'mimes:png,jpg,jpeg,webp', 'max:2048'],
         ], [
             'whatsapp.regex' => 'Nomor WhatsApp tidak valid. Contoh: 0813-8502-8980.',
+            'logo.mimes' => 'Logo harus berformat PNG, JPG, atau WebP.',
+            'logo_dark.mimes' => 'Logo latar gelap harus berformat PNG, JPG, atau WebP.',
+            'logo.max' => 'Ukuran logo maksimal 2 MB.',
+            'logo_dark.max' => 'Ukuran logo latar gelap maksimal 2 MB.',
         ], [
+            'logo' => 'logo', 'logo_dark' => 'logo latar gelap',
             'name' => 'nama perusahaan', 'short' => 'nama singkat', 'tagline' => 'tagline', 'phone' => 'telepon',
             'email' => 'email', 'city' => 'kota', 'address' => 'alamat', 'area' => 'wilayah layanan',
             'hours' => 'jam operasional', 'maps_query' => 'kata kunci peta',
         ]);
 
+        unset($data['logo'], $data['logo_dark']);
+
         foreach ($data as $key => $value) {
             Setting::put($key, $value);
         }
 
+        if ($failed = $this->saveLogos($request)) {
+            return $failed;
+        }
+
         return back()->with('ok', 'Profil perusahaan disimpan.');
+    }
+
+    /** Logo baru menggantikan yang lama; kotak "hapus" mengembalikan ke logo bawaan. */
+    private function saveLogos(Request $request): ?RedirectResponse
+    {
+        foreach (['logo' => 'logo_remove', 'logo_dark' => 'logo_dark_remove'] as $key => $removeFlag) {
+            $value = $request->boolean($removeFlag) ? null : config("site.{$key}");
+
+            if ($file = $request->file($key)) {
+                try {
+                    $value = Images::store($file, 'brand', 700);
+                } catch (\Throwable $e) {
+                    report($e);
+
+                    return back()->withInput()->withErrors([$key => 'Logo tidak bisa disimpan: folder unggahan tidak dapat ditulis. Hubungi admin server.']);
+                }
+            }
+
+            Setting::put($key, $value);
+        }
+
+        self::pruneBrand();
+
+        return null;
+    }
+
+    public static function pruneBrand(): void
+    {
+        Images::prune('brand', array_values(array_filter([config('site.logo'), config('site.logo_dark')])));
+    }
+
+    public function about(): View
+    {
+        return view('admin.settings.about', ['custom' => Setting::isCustomized(...self::SECTIONS['tentang'])]);
+    }
+
+    public function updateAbout(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'about_lead' => ['required', 'string', 'max:400'],
+            'about_body' => ['nullable', 'string', 'max:3000'],
+            'vision' => ['required', 'string', 'max:500'],
+            'mission' => ['required', 'string', 'max:1500'],
+        ], [], [
+            'about_lead' => 'Tentang singkat', 'about_body' => 'Uraian lengkap', 'vision' => 'Visi', 'mission' => 'Misi',
+        ]);
+
+        $mission = self::lines($data['mission']);
+
+        if ($mission === []) {
+            return back()->withInput()->withErrors(['mission' => 'Isi minimal satu butir misi.']);
+        }
+
+        Setting::put('about_lead', trim($data['about_lead']));
+        Setting::put('about_body', trim((string) ($data['about_body'] ?? '')));
+        Setting::put('vision', trim($data['vision']));
+        Setting::put('mission', $mission);
+
+        return back()->with('ok', 'Tentang, visi, dan misi disimpan.');
     }
 
     public function lists(): View
@@ -186,6 +260,10 @@ class ContentController extends Controller
 
         if ($section === 'klien') {
             ClientController::prune();
+        }
+
+        if ($section === 'profil') {
+            self::pruneBrand();
         }
 
         return back()->with('ok', 'Dikembalikan ke isi awal.');

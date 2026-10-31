@@ -76,6 +76,8 @@ Route::prefix('admin')->name('admin.')->middleware(AdminHeaders::class)->group(f
             // Profil perusahaan & daftar
             Route::get('profil', [ContentController::class, 'profile'])->name('profile');
             Route::put('profil', [ContentController::class, 'updateProfile'])->name('profile.update');
+            Route::get('tentang', [ContentController::class, 'about'])->name('about');
+            Route::put('tentang', [ContentController::class, 'updateAbout'])->name('about.update');
             Route::get('daftar', [ContentController::class, 'lists'])->name('lists');
             Route::put('daftar', [ContentController::class, 'updateLists'])->name('lists.update');
             Route::post('kembalikan/{section}', [ContentController::class, 'reset'])->name('reset');

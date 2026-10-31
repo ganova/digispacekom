@@ -24,6 +24,10 @@ return [
         'sparepart' => 'Sparepart',
     ],
 
+    // logo perusahaan dari CMS (nama berkas di public/uploads/brand); null = logo bawaan
+    'logo' => null,
+    'logo_dark' => null,
+
     'name' => 'PT Digital Space Komputer',
     'short' => 'Digital Space Komputer',
     'tagline' => 'Mitra IT untuk kantor, sekolah, dan instansi',
@@ -35,6 +39,16 @@ return [
     'area' => 'Jabodetabek',
     'hours' => 'Senin–Sabtu 08.00–20.00',
     'maps_query' => 'PT Digital Space Komputer Bekasi',
+
+    // Tentang, visi, dan misi (teks contoh; ganti lewat CMS)
+    'about_lead' => 'Kami membantu organisasi menjaga perangkat IT tetap berjalan: dari laptop staf, printer, dan server, sampai jaringan gedung dan CCTV.',
+    'about_body' => 'Untuk kantor yang tidak memiliki tim IT sendiri, kami menyediakan kontrak maintenance dengan kunjungan rutin dan laporan kondisi aset setiap bulan. Pelanggan rumahan juga kami layani lewat service panggilan: teknisi datang, mengecek di tempat, dan biaya disepakati sebelum dikerjakan.',
+    'vision' => 'Menjadi mitra IT tepercaya bagi kantor, sekolah, dan instansi di Jabodetabek.',
+    'mission' => [
+        'Memberikan layanan IT yang cepat, jujur, dan biayanya disepakati sejak awal.',
+        'Menjaga perangkat dan jaringan pelanggan tetap berjalan lewat perawatan rutin.',
+        'Membangun hubungan jangka panjang dengan garansi dan laporan yang jelas.',
+    ],
 
     'clients' => [
         'Embassy of India Jakarta',

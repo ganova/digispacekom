@@ -65,6 +65,18 @@ class DashboardController extends Controller
                 'url' => route('admin.profile'),
             ],
             [
+                'done' => filled(config('site.logo')),
+                'text' => 'Unggah logo perusahaan',
+                'hint' => 'Logo sementara masih dipakai di header dan footer.',
+                'url' => route('admin.profile'),
+            ],
+            [
+                'done' => Setting::isCustomized('about_lead', 'vision', 'mission'),
+                'text' => 'Isi tentang, visi, dan misi',
+                'hint' => 'Teks contoh masih tampil di halaman Tentang dan Kontak.',
+                'url' => route('admin.about'),
+            ],
+            [
                 'done' => ! ServiceTicket::where('code', 'DSK-1028')->exists(),
                 'text' => 'Hapus tiket contoh DSK-1028',
                 'hint' => 'Tiket demo untuk halaman Cek Status.',
