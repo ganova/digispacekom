@@ -342,6 +342,7 @@ https://digispacekom.net dari HP. Website harus tampil sendiri.
 - [ ] Dashboard CasaOS tetap normal dan tidak ada aplikasi CasaOS lain yang berhenti.
 - [ ] Uji kecepatan di **pagespeed.web.dev** (versi HP), simpan hasilnya untuk laporan sebelum/sesudah.
 - [ ] Daftarkan `https://digispacekom.net/sitemap.xml` di **Google Search Console**.
+- [ ] Ganti link website di **Google Business Profile** (Maps) dan media sosial ke `https://digispacekom.net`.
 
 - [ ] Login di `/admin` berhasil, dan halaman `/admin` tidak muncul di Google (sudah `noindex`).
 
