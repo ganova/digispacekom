@@ -10,6 +10,9 @@
 <meta property="og:site_name" content="{{ config('site.name') }}">
 <meta property="og:title" content="@hasSection('title')@yield('title')@else{{ config('site.name') }}@endif">
 <meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:description" content="@yield('description', 'IT support, service komputer, printer, dan jaringan untuk kantor, sekolah, instansi, dan rumah se-Jabodetabek. Teknisi datang ke lokasi.')">
+<meta property="og:image" content="@yield('og_image', asset('img/og-default.png'))">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#070E24">
 <meta name="color-scheme" content="light dark">
 <script>

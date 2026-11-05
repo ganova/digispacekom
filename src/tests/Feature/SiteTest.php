@@ -78,6 +78,15 @@ class SiteTest extends TestCase
         $this->assertSame(0, Booking::count());
     }
 
+    public function test_pages_ship_share_image_and_service_schema(): void
+    {
+        $this->get('/')->assertOk()->assertSee('property="og:image" content="'.asset('img/og-default.png').'"', false);
+        $this->assertFileExists(public_path('img/og-default.png'));
+
+        $slug = array_key_first(config('site.services'));
+        $this->get('/layanan/'.$slug)->assertOk()->assertSee('"@type":"Service"', false);
+    }
+
     public function test_sitemap_lists_pages(): void
     {
         $this->get('/sitemap.xml')

@@ -3,6 +3,20 @@
 @section('title', $service['title'])
 @section('description', $service['title'].' se-'.config('site.area').': '.$service['short'].' Teknisi datang ke lokasi, biaya disepakati dulu.')
 
+@push('meta')
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'Service',
+    'name' => $service['title'],
+    'description' => $service['short'],
+    'url' => url()->current(),
+    'areaServed' => config('site.service_areas'),
+    'provider' => ['@type' => 'ComputerStore', 'name' => config('site.name'), 'url' => url('/'), 'telephone' => config('site.phone')],
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}
+</script>
+@endpush
+
 @php($device = \App\Models\PriceItem::categories()[$service['price_category']] ?? null)
 
 @section('content')

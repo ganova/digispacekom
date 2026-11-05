@@ -3,8 +3,11 @@
 @section('title', $article->title)
 @section('description', $article->excerpt)
 
+@if ($article->cover)
+@section('og_image', \App\Support\Images::url('articles', $article->cover))
+@endif
+
 @push('meta')
-@if ($article->cover)<meta property="og:image" content="{{ \App\Support\Images::url('articles', $article->cover) }}">@endif
 <meta property="article:published_time" content="{{ $article->published_at->toIso8601String() }}">
 @endpush
 
