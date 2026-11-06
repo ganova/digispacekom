@@ -33,6 +33,7 @@
         ],
         'Operasional' => [
             ['admin.bookings.index', 'Permintaan masuk', 'inbox', 'admin.bookings.*', true],
+            ['admin.mail', 'Notifikasi email', 'mail', 'admin.mail*', true],
             ['admin.tickets.index', 'Tiket servis', 'ticket', 'admin.tickets.*'],
             ['admin.prices.index', 'Daftar harga', 'tag', 'admin.prices.*'],
         ],

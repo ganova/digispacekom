@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Setting;
+use App\Support\Notify;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,5 +19,7 @@ class AppServiceProvider extends ServiceProvider
         foreach (Setting::overrides() as $key => $value) {
             config(["site.{$key}" => $value]);
         }
+
+        Notify::configureMail();
     }
 }

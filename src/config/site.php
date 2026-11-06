@@ -41,6 +41,13 @@ return [
     'address' => 'Bekasi, Jawa Barat',
     'area' => 'Jabodetabek',
     'hours' => 'Senin–Sabtu 08.00–20.00',
+    'notify_emails' => [],      // penerima email permintaan masuk (diatur di CMS: Notifikasi email)
+    'smtp_host' => null,
+    'smtp_port' => 587,
+    'smtp_user' => null,
+    'smtp_pass' => null,        // terenkripsi (Crypt); tidak pernah ditampilkan
+    'smtp_secure' => 'tls',
+    'mail_from' => null,
     'analytics_id' => null,     // ID Google Analytics 4 (G-XXXXXXXXXX); kosong = tidak ada pelacakan
     'google_verify' => null,    // kode verifikasi Google Search Console (meta tag)
     'maps_query' => 'PT Digital Space Komputer Bekasi',

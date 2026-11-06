@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Support\Notify;
 use App\Support\Site;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,6 +37,8 @@ class BookingController extends Controller
         ]);
 
         $booking = Booking::create(['type' => $data['type'] ?? 'booking'] + $data);
+
+        Notify::booking($booking);
 
         return redirect()->away(Site::whatsappUrl($this->message($booking)));
     }

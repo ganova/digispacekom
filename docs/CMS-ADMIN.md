@@ -93,6 +93,8 @@ Halaman Profil, Layanan, Tab beranda, Landing, dan Klien/wilayah/langkah punya t
 
 **Memasang logo perusahaan:** Profil & kontak → *Unggah logo* (latar terang). Bila punya versi untuk latar gelap (mis. logo putih), unggah di kolom kedua; bila tidak, logo terang otomatis tampil di kotak putih pada latar gelap. Logo dipakai di header dan footer.
 
+**Notifikasi email untuk permintaan masuk:** menu *Notifikasi email* (khusus admin). Isi email penerima (maksimal 5) dan akun pengirim (SMTP). Contoh Gmail: server `smtp.gmail.com`, port `587`, username = alamat Gmail, password = *App Password* (Akun Google → Keamanan → Verifikasi 2 langkah → Sandi aplikasi). Simpan, lalu klik *Kirim email percobaan*. Setelah itu tiap booking atau permintaan penawaran baru dikirim ke email penerima. Password disimpan terenkripsi dan tidak pernah ditampilkan lagi; kegagalan kirim email tidak mengganggu form pengunjung. Kosongkan semua kolom untuk mematikan notifikasi.
+
 **Memasang Google Analytics dan Search Console:** Profil & kontak → bagian *Google*. Isi *ID Google Analytics* (format `G-…`) agar pengunjung terhitung; kosong = tidak ada pelacakan. Untuk Search Console, pilih metode *tag HTML* di Google, lalu tempel hanya isi `content` ke *Kode verifikasi*.
 
 - **Nama perusahaan di samping logo:** secara bawaan tulisan nama tetap tampil di samping logo (cocok untuk logo yang hanya berisi ikon). Bila logo yang diunggah sudah memuat nama, matikan kotak *Tampilkan nama perusahaan di samping logo*.

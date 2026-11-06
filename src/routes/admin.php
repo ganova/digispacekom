@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ImageUploadController;
+use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\PriceCategoryController;
 use App\Http\Controllers\Admin\PriceController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -76,6 +77,10 @@ Route::prefix('admin')->name('admin.')->middleware(AdminHeaders::class)->group(f
             // Profil perusahaan & daftar
             Route::get('profil', [ContentController::class, 'profile'])->name('profile');
             Route::put('profil', [ContentController::class, 'updateProfile'])->name('profile.update');
+            Route::get('notifikasi-email', [MailController::class, 'edit'])->name('mail');
+            Route::put('notifikasi-email', [MailController::class, 'update'])->name('mail.update');
+            Route::post('notifikasi-email/tes', [MailController::class, 'test'])->middleware('throttle:5,1')->name('mail.test');
+            Route::post('notifikasi-email/hapus', [MailController::class, 'reset'])->name('mail.reset');
             Route::get('tentang', [ContentController::class, 'about'])->name('about');
             Route::put('tentang', [ContentController::class, 'updateAbout'])->name('about.update');
             Route::get('daftar', [ContentController::class, 'lists'])->name('lists');
